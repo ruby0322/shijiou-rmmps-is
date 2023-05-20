@@ -2,7 +2,17 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getAnalytics } from "firebase/analytics";
-import firebaseConfig from '../firebaseConfig.json';
+
+const firebaseConfig = {
+    apiKey: process.env.FIREBASE_API_KEY,
+    authDomain: "shijiou-rmmps-is-5da78.firebaseapp.com",
+    projectId: "shijiou-rmmps-is-5da78",
+    storageBucket: "shijiou-rmmps-is-5da78.appspot.com",
+    messagingSenderId: "657858379846",
+    appId: "1:657858379846:web:0d2b37224ce52185edca47",
+    measurementId: "G-W1BW1GS617"
+};
+  
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
