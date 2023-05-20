@@ -8,12 +8,15 @@ const router = express.Router();
 // Usage: router.use('/someApi', someApiRouter);
 
 import testRouter from './test.js';
-import bot from './bot.js';
+import botRouter from './bot.js';
+
+router.get("/", (req, res) => {
+    res.status(200).send('Hello from RMMPS.');
+})
 
 router.use('/test', testRouter);
-router.post('/bot', bot.parser());
+router.use('/bot', botRouter);
 
 // *** End of routers ***
-
 
 export default router;

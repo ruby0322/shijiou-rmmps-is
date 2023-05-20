@@ -1,12 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv-defaults';
 import router from './routes/index.js';
+import crypto from 'crypto';
 
-dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 4000;
+
+const channelSecret = "..."; // Channel secret string
+const body = "..."; // Request body string
 
 app.use(cors());
 app.use(express.json());
