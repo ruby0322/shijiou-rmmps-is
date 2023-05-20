@@ -13,16 +13,6 @@ const config = {
 
 const client = new line.Client(config);
 
-botRouter.post('/callback', line.middleware(config), (req, res) => {
-  Promise
-    .all(req.body.events.map(handleEvent))
-    .then((result) => res.json(result))
-    .catch((err) => {
-      console.error(err);
-      res.status(500).end();
-    });
-});
-
 const handleEvent = event => {
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
@@ -35,5 +25,18 @@ const handleEvent = event => {
   // use reply API
   return client.replyMessage(event.replyToken, echo);
 }
+
+botRouter.post('/callback', line.middleware(config), (req, res) => {
+  console.log(req);
+  console.log(req.body);
+  console.log(req.body.events);
+  Promise
+    .all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
+});
 
 export default botRouter;
