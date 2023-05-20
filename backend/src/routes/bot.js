@@ -1,6 +1,9 @@
 import express from 'express';
 import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
+import { db } from '../db.js';
+import { collection, addDoc } from "firebase/firestore"; 
+
 dotenv.config();
 
 const botRouter = express.Router();
@@ -13,14 +16,22 @@ const config = {
 
 const client = new Client(config);
 
-const handleEvent = event => {
+const handleEvent = async event => {
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
 
+  const userMessage = event.message.text;
+
+  const docRef = await addDoc(collection(db, "messages"), {
+    message: userMessage,
+    timestamp: event.timestamp
+  });
+  console.log("Document written with ID: ", docRef.id)
+
   // create a echoing text message
-  const echo = { type: 'text', text: event.message.text };
+  const echo = { type: 'text', text: userMessage };
 
   // use reply API
   return client.replyMessage(event.replyToken, echo);
