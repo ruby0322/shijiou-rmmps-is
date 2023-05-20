@@ -27,19 +27,15 @@ const handleEvent = event => {
 }
 
 botRouter.post('/callback', middleware(config), (req, res) => {
-  console.log('received post');
   console.log(req);
-  console.log(req.body);  
-  console.log(req.body.events);
-  res.status(200);
 
-  // Promise
-  //   .all(req.body.events.map(handleEvent))
-  //   .then((result) => res.json(result))
-  //   .catch((err) => {
-  //     console.error(err);
-  //     res.status(500).end();
-  //   });
+  Promise
+    .all(req.body.events.map(handleEvent))
+    .then((result) => res.json(result))
+    .catch((err) => {
+      console.error(err);
+      res.status(500).end();
+    });
 });
 
 export default botRouter;
