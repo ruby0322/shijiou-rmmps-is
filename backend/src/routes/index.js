@@ -14,8 +14,9 @@ router.get("/", (req, res) => {
     res.status(200).send('Hello from RMMPS.');
 })
 
-router.use('/test', testRouter);
 router.use('/bot', botRouter);
+router.use(express.json());
+router.use('/test', testRouter);
 
 // *** End of routers ***
 

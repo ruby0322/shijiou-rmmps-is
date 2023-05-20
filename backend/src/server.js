@@ -11,8 +11,6 @@ const channelSecret = "..."; // Channel secret string
 const body = "..."; // Request body string
 
 app.use(cors());
-app.use(express.json());
-
 app.use('/api', router);
 
 app.listen({ port }, () => {
