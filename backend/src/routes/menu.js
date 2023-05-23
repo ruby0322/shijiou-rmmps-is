@@ -40,7 +40,7 @@ menuRouter.post("/addItem", async (req, res) => {
     }
 });
 
-menuRouter.post("/updateItemContent", async (req, res) => {
+menuRouter.put("/updateItemContent", async (req, res) => {
     try {
         const itemId = req.body.itemId;
         const itemName = req.body.itemName;
@@ -59,7 +59,7 @@ menuRouter.post("/updateItemContent", async (req, res) => {
     }
 });
 
-menuRouter.post("/updateItemStatus", async (req, res) => {
+menuRouter.put("/updateItemStatus", async (req, res) => {
     try {
         const itemId = req.body.itemId;
         const status = req.body.status;
@@ -73,7 +73,7 @@ menuRouter.post("/updateItemStatus", async (req, res) => {
     }
 });
 
-menuRouter.post("/deleteItem", async (req, res) => {
+menuRouter.delete("/deleteItem", async (req, res) => {
     try {
         const itemId = req.body.itemId;
         const itemRef = doc(db, "menuItems", itemId);
