@@ -1,9 +1,9 @@
 const TodaySpecial = class {
-    constructor(itemName, itemCategory, price, status) {
+    constructor(itemName, itemCategory, price) {
         this.itemName = itemName;
         this.itemCategory = itemCategory;
         this.price = price;
-        this.status = status;
+        this.status = "serving";
     }
 };
 
