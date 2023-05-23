@@ -9,6 +9,7 @@ const router = express.Router();
 
 import testRouter from './test.js';
 import botRouter from './bot.js';
+import menuRouter from './menu.js';
 
 router.get("/", (req, res) => {
     res.status(200).send('Hello from RMMPS.');
@@ -17,6 +18,7 @@ router.get("/", (req, res) => {
 router.use('/bot', botRouter);
 router.use(express.json());
 router.use('/test', testRouter);
+router.use("/menu", menuRouter);
 
 // *** End of routers ***
 
