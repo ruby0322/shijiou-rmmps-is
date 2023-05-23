@@ -2,7 +2,8 @@ import express from 'express';
 import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
-import { collection, addDoc } from "firebase/firestore"; 
+import { collection, addDoc } from "firebase/firestore";
+
 
 dotenv.config();
 
