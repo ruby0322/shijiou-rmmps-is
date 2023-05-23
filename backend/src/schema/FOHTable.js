@@ -1,8 +1,8 @@
 const FOHTable = class {
-    constuctor(tableId, status, area) {
-        this.tableId = tableId;
-        this.status = status;
+    constructor(tableName, area) {
+        this.tableName = tableName;
         this.area = area;
+        this.status = "vacant";
     }
 }
 
