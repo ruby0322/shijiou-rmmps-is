@@ -92,6 +92,6 @@ export default menuRouter;
     /getMenu
     /addItem
     /updateItemContent
-    /updateItemeStatus
+    /updateItemStatus
     /deleteItem
 */
