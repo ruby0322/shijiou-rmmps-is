@@ -33,8 +33,8 @@ menuRouter.post("/addItem", async (req, res) => {
         const newItemRef = await addDoc(menuRef, {...newItem});
         console.log(newItemRef.id);
         res.status(200).json({
-            message: "item is added successfully",
-            newItem: newItem,
+            message: "menu item is added successfully",
+            newItem: {...newItem, itemId: newItemRef.id},
         });
     } catch (error) {
         console.log(error);
