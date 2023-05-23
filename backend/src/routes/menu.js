@@ -12,7 +12,7 @@ menuRouter.get("/getMenu", async (req, res) => {
         const fullMenu = await getDocs(menuRef);
         let menuList = [];
         fullMenu.forEach(doc => {
-            menuList.push({id: doc.id, ...doc.data()});
+            menuList.push({itemId: doc.id, ...doc.data()});
             console.log(doc.id, " => ", doc.data());
         })
         res.status(200).json({
