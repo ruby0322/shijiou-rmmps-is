@@ -40,7 +40,6 @@ const handleEvent = async event => {
 
 botRouter.post('/callback', middleware(config), (req, res) => {
   console.log(req);
-
   Promise
     .all(req.body.events.map(handleEvent))
     .then((result) => res.json(result))
@@ -49,5 +48,8 @@ botRouter.post('/callback', middleware(config), (req, res) => {
       res.status(500).end();
     });
 });
+
+
+
 
 export default botRouter;

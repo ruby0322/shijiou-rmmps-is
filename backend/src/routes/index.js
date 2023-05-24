@@ -3,7 +3,6 @@ import express from 'express';
 const router = express.Router();
 
 // *** Routers ***
-
 // Usage: import someApiRouter from './someApi.js'
 // Usage: router.use('/someApi', someApiRouter);
 
