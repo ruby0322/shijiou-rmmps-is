@@ -25,17 +25,25 @@ const handleEvent = async event => {
 
   const userMessage = event.message.text;
 
-  const docRef = await addDoc(collection(db, "messages"), {
-    message: userMessage,
-    timestamp: event.timestamp
-  });
-  console.log("Document written with ID: ", docRef.id)
+  if (userMessage === "我要候位！") {
+    const replyMessage = "不要＝＝";
+    const replyPackage = { type: "text", text: replyMessage };
+    return client.replyMessage(event.replyToken, replyPackage);
+  }
+  else {
+    const docRef = await addDoc(collection(db, "messages"), {
+      message: userMessage,
+      timestamp: event.timestamp
+    });
+    console.log("Document written with ID: ", docRef.id)
+  
+    // create a echoing text message
+    const echo = { type: 'text', text: userMessage };
+  
+    // use reply API
+    return client.replyMessage(event.replyToken, echo);
+  }
 
-  // create a echoing text message
-  const echo = { type: 'text', text: userMessage };
-
-  // use reply API
-  return client.replyMessage(event.replyToken, echo);
 }
 
 botRouter.post('/callback', middleware(config), (req, res) => {
