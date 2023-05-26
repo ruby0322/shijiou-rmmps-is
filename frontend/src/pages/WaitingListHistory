@@ -1,0 +1,8 @@
+const WaitingListHistory = () => {
+
+    return (
+        <div>history</div>
+    )
+}
+
+export default WaitingListHistory;

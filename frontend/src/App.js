@@ -7,7 +7,7 @@ import WaitingListDashboard from './pages/WaitingListDashboard.js';
 const App = () => {
   return (
     <div className="App">
-      ShiJiou RMMPS IS
+      {/* ShiJiou RMMPS IS */}
       <Routes>
         <Route exact path='/' element={<Home />} />
         <Route exact path='/home/' element={<Home />} />
