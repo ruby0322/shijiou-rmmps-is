@@ -68,10 +68,11 @@ const handleEvent = async event => {
         const docSnap = await getDoc(docRef);
 
         if (docSnap.exists()) {
-          const assignedNumber = docSnap.data().number;
+          const assignedNumber = docSnap.data().number+1;
           reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
           user.isWating = true;
-          setDoc(userRef, {...user});
+          await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
+          await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
         } else {
           reply.push(REPLYS.SYSTEM_ERROR);
         }
