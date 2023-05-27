@@ -25,6 +25,8 @@ const REPLYS = {
   SYSTEM_ERROR: '系統錯誤，我們正在努力修復中！'
 }
 
+const getTextMessage = (meg) => ({ type: 'text', text: msg });
+
 const handleEvent = async event => {
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
@@ -91,6 +93,8 @@ const handleEvent = async event => {
   }
 
   // use reply API
+  for (let i = 0; i < reply.length; ++i)
+    reply[i] = getTextMessage(reply[i]);
   return client.replyMessage(event.replyToken, reply);
 }
 
