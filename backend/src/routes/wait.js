@@ -12,8 +12,8 @@ import {
 } from "firebase/firestore";
 
 const waitRequestRouter = express.Router();
-const todayWaitCollection = "todayWaitRef";
-const historyWaitCollection = "historyWaitRef";
+const todayWaitCollection = "todayWaitRequests";
+const historyWaitCollection = "historyWaitRequests";
 const todayWaitRef = collection(db, todayWaitCollection);
 const historyWaitRef = collection(db, historyWaitCollection);
 
@@ -52,6 +52,21 @@ waitRequestRouter.put("/notify", async (req, res) => {
     }
 })
 
+waitRequestRouter.put("/late", async (req, res) => {
+    try {
+        const waitReqId = req.body.waitReqId;
+        const waitReqRef = doc(db, todayWaitCollection, waitReqId);
+        await updateDoc(waitReqRef, {
+            status: "late",
+        });
+        res.status(200).json({
+            message: `wait request ${waitReqId} status is updated to late`,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 waitRequestRouter.put("/done", async (req, res) => {
     try {
         const waitReqId = req.body.waitReqId;
@@ -61,8 +76,7 @@ waitRequestRouter.put("/done", async (req, res) => {
             status: "arrived",
         });
         res.status(200).json({
-            message: "wait request status is updated to arrived",
-            waitReqId: waitReqId,
+            message: `wait request ${waitReqId} status is updated to arrived`,
         });
     } catch (error) {
         console.log(error);
@@ -80,7 +94,7 @@ waitRequestRouter.put("/remove", async (req, res) => {
         });
 
         res.status(200).json({
-            message: "wait request status is updated to removed",
+            message: `wait request ${waitReqId} status is updated to removed`,
             waitReqId: waitReqId,
         });
     } catch (error) {
@@ -91,17 +105,17 @@ waitRequestRouter.put("/remove", async (req, res) => {
 waitRequestRouter.put("/clear", async (req, res) => {
     try {
         const todayWaitRequests = await getDocs(todayWaitRef);
-        todayWaitRequests.forEach(async (doc) => {
-            const docData = { ...doc.data() };
+        todayWaitRequests.forEach(async (document) => {
+            const docData = { ...document.data() };
             if (docData.isWaiting === false) {
                 await addDoc(historyWaitRef, { ...docData });
-                const docRef = doc(db, todayWaitCollection, doc.id);
+                console.log(document.id);
+                const docRef = doc(db, todayWaitCollection, document.id);
                 await deleteDoc(docRef);
             }
         });
         res.status(200).json({
-            message: "wait request is moved to history",
-            waitReqId: waitReqId,
+            message: `all non-pending wait requests are moved to history`,
         });
     } catch (error) {
         console.log(error);
@@ -111,9 +125,9 @@ waitRequestRouter.put("/clear", async (req, res) => {
 waitRequestRouter.put("/removeAll", async (req, res) => {
     try {
         const todayWaitRequests = await getDocs(todayWaitRef);
-        todayWaitRequests.forEach(async (doc) => {
-            const docRef = doc(db, todayWaitCollection, doc.id);
-            const docData = { ...doc.data() };
+        todayWaitRequests.forEach(async (document) => {
+            const docRef = doc(db, todayWaitCollection, document.id);
+            const docData = { ...document.data() };
             if (docData.isWaiting === true) {
                 await addDoc(historyWaitRef, {
                     isWaiting: false,
@@ -124,12 +138,11 @@ waitRequestRouter.put("/removeAll", async (req, res) => {
                 await addDoc(historyWaitRef, {
                     ...docData,
                 });
-            }
+            } 
             await deleteDoc(docRef);
         });
         res.status(200).json({
-            message: "wait request status is updated to removed",
-            waitReqId: waitReqId,
+            message: "all wait requests are moved to history",
         });
     } catch (error) {
         console.log(error);
@@ -139,10 +152,6 @@ waitRequestRouter.put("/removeAll", async (req, res) => {
 waitRequestRouter.post("/addWaitReq", async (req, res) => {
     try {
         const { waitingNumber, lineUserId, groupSize, requestMadeTime } = req.body;
-        console.log(`waiting number = ${waitingNumber}`);
-        console.log(`line user id = ${lineUserId}`);
-        console.log(`group size = ${groupSize}`);
-        console.log(`request made time = ${requestMadeTime}`);
         const newReq = new WaitRequest(waitingNumber, lineUserId, groupSize, requestMadeTime);
         const newReqRef = await addDoc(todayWaitRef, { ...newReq });
         console.log(newReqRef.id);

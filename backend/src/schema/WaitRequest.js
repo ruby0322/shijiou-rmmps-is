@@ -6,9 +6,9 @@ const WaitRequest = class {
         this.status = "pending";
         this.groupSize = groupSize;
         this.requestMadeTime = requestMadeTime;
-        this.requestAnsweredTime = undefined;
-        this.arriveTime = undefined;
-        this.cancelTime = undefined;
+        this.requestAnsweredTime = null;
+        this.arriveTime = null;
+        this.cancelTime = null;
     }
 }
 
