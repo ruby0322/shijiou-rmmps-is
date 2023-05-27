@@ -20,7 +20,7 @@ const client = new Client(config);
 
 const REPLYS = {
   ALREADY_WAITING: '很抱歉無法為您候位，因為您已在候位隊伍中。請耐心等候！',
-  WAIT_SUCCESS: '候位成公',
+  WAIT_SUCCESS: '候位成功！',
   WAIT_FAILURE: '',
   SYSTEM_ERROR: '系統錯誤，我們正在努力修復中！'
 }
@@ -32,6 +32,7 @@ const handleEvent = async event => {
   }
 
   const userId = event.source.userId;
+  console.log(userId);
 
   // Check if the user is in the 'customers' collection
   // if not, add new customer
