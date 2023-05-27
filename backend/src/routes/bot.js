@@ -22,7 +22,9 @@ const REPLYS = {
   ALREADY_WAITING: '很抱歉無法為您候位，因為您已在候位隊伍中。請耐心等候！',
   WAIT_SUCCESS: '候位成功！',
   WAIT_FAILURE: '',
-  SYSTEM_ERROR: '系統錯誤，我們正在努力修復中！'
+  SYSTEM_ERROR: '系統錯誤，我們正在努力修復中！',
+  CANCEL_FAILURE: '很抱歉無法為您取消候位，因為您目前並沒有在候位。',
+  CANCEL_SUCCESS: '取消候位成功！',
 }
 
 const getTextMessage = (msg) => ({ type: 'text', text: msg });
@@ -83,8 +85,14 @@ const handleEvent = async event => {
     } else {
       reply.push(REPLYS.ALREADY_WAITING);
     }
-  } else if (userMessage === "") {
-
+  } else if (userMessage === "取消候位") {
+    if (user.isWating) {
+      user.isWating = false;
+      reply.push(REPLYS.CANCEL_SUCCESS);
+      await setDoc(userRef, { ...user });
+    } else {
+      reply.push(REPLYS.CANCEL_FAILURE);
+    }
   } else if (userMessage === "") {
 
   } else if (userMessage === "") {
