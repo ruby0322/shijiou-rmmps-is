@@ -42,7 +42,7 @@ const handleEvent = async event => {
     user = userSnap.data();
   } else {
     user = new Customer(userId);
-    await setDoc(userRef, user);
+    await setDoc(userRef, {...user});
   }
 
   const userMessage = event.message.text;
@@ -68,7 +68,7 @@ const handleEvent = async event => {
           const assignedNumber = docSnap.data().number;
           reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
           user.isWating = true;
-          setDoc(userRef, user);
+          setDoc(userRef, {...user});
         } else {
           reply.push(REPLYS.SYSTEM_ERROR);
         }
