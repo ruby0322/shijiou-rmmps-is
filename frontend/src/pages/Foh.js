@@ -1,7 +1,28 @@
+import { TabletOutlined } from "@ant-design/icons";
+import { Layout, Menu, theme } from "antd";
 import React, { useState, useEffect } from "react";
 import instance from "../axios";
+const { Content, Footer, Sider } = Layout;
 
-const FOH = () => {
+const items = [
+  {
+    key: "1",
+    icon: <TabletOutlined />,
+    label: "Outdoor",
+  },
+  {
+    key: "2",
+    icon: <TabletOutlined />,
+    label: "1F",
+  },
+  {
+    key: "3",
+    icon: <TabletOutlined />,
+    label: "2F",
+  },
+];
+const Foh = () => {
+  const [current, setCurrent] = useState("戶外");
   const [tables, setTables] = useState([]);
   const [newTableName, setNewTableName] = useState("");
   const [newTableArea, setNewTableArea] = useState("");
@@ -10,7 +31,10 @@ const FOH = () => {
   const getTables = async () => {
     try {
       const response = await instance.get("/foh/getFOH");
-      setTables(response.data.tableList);
+      const allTables = response.data.tableList;
+      console.log(allTables);
+      const currentTable = allTables.filter((item) => item.area === current);
+      setTables(currentTable);
     } catch (error) {
       console.log(error);
     }
@@ -63,45 +87,57 @@ const FOH = () => {
     }
   };
 
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+
   useEffect(() => {
     getTables();
   }, []);
 
+  const onClick = (e) => {
+    if (e.key == "1") {
+      setCurrent("戶外");
+    } else if (e.key == "2") {
+      setCurrent("1F");
+    } else {
+      setCurrent("2F");
+    }
+  };
+  useEffect(() => {
+    getTables();
+  }, current);
+
   return (
-    <div>
-      <h1>FOH</h1>
-      <div>
-        <h2>新增桌子：</h2>
-        <input
-          type="text"
-          value={newTableName}
-          onChange={(e) => setNewTableName(e.target.value)}
-          placeholder="桌子名稱"
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider style={{ background: colorBgContainer }}>
+        <Menu
+          defaultSelectedKeys={["1"]}
+          mode="inline"
+          items={items}
+          onClick={onClick}
         />
-        <input
-          type="text"
-          value={newTableArea}
-          onChange={(e) => setNewTableArea(e.target.value)}
-          placeholder="區域"
-        />
-        <button onClick={addTable}>新增桌子</button>
-      </div>
-      <div>
-        <h2>現有桌子：</h2>
-        {tables.map((table) => (
-          <div key={table.tableId}>
-            <p>{table.tableName}</p>
-            <p>{table.area}</p>
-            <p>{table.status}</p>
-            <button onClick={() => updateTableStatus(table.tableId)}>
-              更改狀態
-            </button>
-            <button onClick={() => deleteTable(table.tableId)}>刪除</button>
+      </Sider>
+      <Layout>
+        <Content style={{ margin: "0 16px" }}>
+          <div style={{ padding: 24, minHeight: 360 }}>
+            <h2>現有桌子：</h2>
+            {tables.map((table) => (
+              <div key={table.tableId}>
+                <p>{table.tableName}</p>
+                <p>{table.area}</p>
+                <p>{table.status}</p>
+                <button onClick={() => updateTableStatus(table.tableId)}>
+                  更改狀態
+                </button>
+                <button onClick={() => deleteTable(table.tableId)}>刪除</button>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-    </div>
+        </Content>
+        <Footer style={{ textAlign: "center" }}>Footer</Footer>
+      </Layout>
+    </Layout>
   );
 };
-
-export default FOH;
+export default Foh;
