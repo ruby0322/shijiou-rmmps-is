@@ -65,7 +65,7 @@ const WaitingListHistory = () => {
                     word='顧客取消';
                 }
                 return (
-                    <Tag color={color} key={status}>
+                    <Tag bordered={false} color={color} key={status}>
                         {word}
                     </Tag>
                 );
@@ -126,7 +126,7 @@ const WaitingListHistory = () => {
                 })
             } */}
             
-            <Table columns={columns} dataSource={testDatas} />
+            <Table columns={columns} dataSource={testDatas} pagination={{ pageSize: 50 }} scroll={{y: 450}} />
         </div>
     );
 }
