@@ -40,13 +40,13 @@ const items = [
 
 const App = () => {
   const navigate = useNavigate();
-  const [currentTabKey, setCurrentTabKey] = useState('菜單後台');
+  let location = useLocation();
+  const currentTabKey = location.pathname.slice(1);
   const [collapsed, setCollapsed] = useState(false);
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const handleMenuClick = ({ key }) => {
-    setCurrentTabKey(key);
     navigate(`/${key}`);
   };
   return (
@@ -56,7 +56,7 @@ const App = () => {
         <Menu
           theme="dark"
           mode="inline"
-          defaultSelectedKeys={['menu-dashboard']}
+          defaultSelectedKeys={[currentTabKey]}
           items={items}
           onClick={handleMenuClick}
         />
@@ -79,7 +79,7 @@ const App = () => {
             }}
           />
           <span>
-            { tabKeyToLabelMap[currentTabKey] }
+            { tabKeyToLabelMap[currentTabKey  ] }
           </span>
         </Header>
         <Content

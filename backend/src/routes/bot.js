@@ -2,7 +2,8 @@ import express from 'express';
 import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
-import { collection, addDoc } from "firebase/firestore";
+import Customer from '../schema/Customer.js';
+import { collection, setDoc, doc, getDoc  } from "firebase/firestore";
 
 
 dotenv.config();
@@ -17,29 +18,97 @@ const config = {
 
 const client = new Client(config);
 
+const REPLYS = {
+  ALREADY_WAITING: '很抱歉無法為您候位，因為您已在候位隊伍中。請耐心等候！',
+  WAIT_SUCCESS: '候位成功！',
+  WAIT_FAILURE: '',
+  SYSTEM_ERROR: '系統錯誤，我們正在努力修復中！',
+  CANCEL_FAILURE: '很抱歉無法為您取消候位，因為您目前並沒有在候位。',
+  CANCEL_SUCCESS: '取消候位成功！',
+}
+
+const getTextMessage = (msg) => ({ type: 'text', text: msg });
+
 const handleEvent = async event => {
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
     return Promise.resolve(null);
   }
 
+  const userId = event.source.userId;
+  console.log(userId);
+
+  // Check if the user is in the 'customers' collection
+  // if not, add new customer
+  const userRef = doc(db, 'customers', userId);
+  const userSnap = await getDoc(userRef);
+  let user;
+  if (userSnap.exists()) {
+    user = userSnap.data();
+  } else {
+    user = new Customer(userId);
+    await setDoc(userRef, {...user});
+  }
+
   const userMessage = event.message.text;
 
-  const docRef = await addDoc(collection(db, "messages"), {
-    message: userMessage,
-    timestamp: event.timestamp
-  });
-  console.log("Document written with ID: ", docRef.id)
+  // const docRef = await addDoc(collection(db, "messages"), {
+  //   message: userMessage,
+  //   timestamp: event.timestamp
+  // });
+  // console.log("Document written with ID: ", docRef.id)
 
   // create a echoing text message
-  const echo = { type: 'text', text: userMessage };
+  // const echo = { type: 'text', text: userMessage };
+  let reply = [];
+
+  if (userMessage === '我要候位') {
+    if (!user.isWating) {  /* 消費者沒有在候位 */
+      try {
+        reply.push(REPLYS.WAIT_SUCCESS);
+        const docRef = doc(db, 'variables', 'lastAssigned');
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const assignedNumber = docSnap.data().number+1;
+          reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
+          user.isWating = true;
+          await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
+          await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
+        } else {
+          reply.push(REPLYS.SYSTEM_ERROR);
+        }
+      } catch (e) {
+        console.log(e);
+        reply.push(REPLYS.WAIT_FAILURE);
+      }
+    } else {
+      reply.push(REPLYS.ALREADY_WAITING);
+    }
+  } else if (userMessage === "取消候位") {
+    if (user.isWating) {
+      user.isWating = false;
+      reply.push(REPLYS.CANCEL_SUCCESS);
+      await setDoc(userRef, { ...user });
+    } else {
+      reply.push(REPLYS.CANCEL_FAILURE);
+    }
+  } else if (userMessage === "") {
+
+  } else if (userMessage === "") {
+
+  } else {
+
+  }
 
   // use reply API
-  return client.replyMessage(event.replyToken, echo);
+  for (let i = 0; i < reply.length; ++i)
+    reply[i] = getTextMessage(reply[i]);
+  return client.replyMessage(event.replyToken, reply);
 }
 
 botRouter.post('/callback', middleware(config), (req, res) => {
-  console.log(req);
+  // console.log(req);
 
   Promise
     .all(req.body.events.map(handleEvent))
