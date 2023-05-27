@@ -1,5 +1,6 @@
 import express from "express";
 import { db } from "../db.js";
+import WaitRequest from "../schema/WaitRequest.js";
 import {
   collection,
   doc,
@@ -129,6 +130,24 @@ waitRequestRouter.put("/removeAll", async (req, res) => {
         res.status(200).json({
             message: "wait request status is updated to removed",
             waitReqId: waitReqId,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+})
+
+waitRequestRouter.post("/addWaitReq", async (req, res) => {
+    try {
+        const { waitingNumber, lineUserId, groupSize, requestMadeTime } = req.body;
+        console.log(`waiting number = ${waitingNumber}`);
+        console.log(`line user id = ${lineUserId}`);
+        console.log(`group size = ${groupSize}`);
+        console.log(`request made time = ${requestMadeTime}`);
+        const newReq = new WaitRequest(waitingNumber, lineUserId, groupSize, requestMadeTime);
+        const newReqRef = await addDoc(todayWaitRef, { ...newReq });
+        console.log(newReqRef.id);
+        res.status(200).json({
+            message: `new request ${newReqRef.id} is added successfully`,
         });
     } catch (error) {
         console.log(error);
