@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "../axios";
+import instance from "../axios";
 
 const MenuDashboard = () => {
   const [menuList, setMenuList] = useState([]);
@@ -13,7 +13,7 @@ const MenuDashboard = () => {
 
   const fetchMenu = async () => {
     try {
-      const response = await axios.get("/menu/getMenu");
+      const response = await instance.get("/menu/getMenu");
       setMenuList(response.data.menuList);
     } catch (error) {
       console.log(error);
@@ -22,7 +22,7 @@ const MenuDashboard = () => {
 
   const addMenuItem = async () => {
     try {
-      const response = await axios.post("/menu/addItem", {
+      const response = await instance.post("/menu/addItem", {
         itemName,
         itemCategory,
         price,
@@ -36,7 +36,7 @@ const MenuDashboard = () => {
 
   const updateItemContent = async (itemId, newName, newCategory, newPrice) => {
     try {
-      const response = await axios.put("/menu/updateItemContent", {
+      const response = await instance.put("/menu/updateItemContent", {
         itemId,
         newName,
         newCategory,
@@ -51,7 +51,7 @@ const MenuDashboard = () => {
 
   const updateItemStatus = async (itemId, status) => {
     try {
-      const response = await axios.put("/menu/updateItemStatus", {
+      const response = await instance.put("/menu/updateItemStatus", {
         itemId,
       });
       console.log(response.data);
@@ -63,9 +63,7 @@ const MenuDashboard = () => {
 
   const deleteMenuItem = async (itemId) => {
     try {
-      const response = await axios.delete("/menu/deleteItem", {
-        data: { itemId },
-      });
+      const response = await instance.delete(`/menu/deleteItem/${itemId}`);
       console.log(response.data);
       fetchMenu();
     } catch (error) {

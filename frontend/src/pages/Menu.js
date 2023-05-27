@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import axios from "../axios";
+import instance from "../axios";
 
 const Menu = () => {
   const [menuList, setMenuList] = useState([]);
@@ -10,7 +10,7 @@ const Menu = () => {
 
   const fetchMenu = async () => {
     try {
-      const response = await axios.get("/menu/getMenu");
+      const response = await instance.get("/menu/getMenu");
       setMenuList(response.data.menuList);
     } catch (error) {
       console.log(error);

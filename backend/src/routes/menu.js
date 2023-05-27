@@ -93,9 +93,9 @@ menuRouter.put("/updateItemStatus", async (req, res) => {
   }
 });
 
-menuRouter.delete("/deleteItem", async (req, res) => {
+menuRouter.delete("/deleteItem/:itemId", async (req, res) => {
   try {
-    const itemId = req.body.itemId;
+    const itemId = req.params.itemId;
     const itemRef = doc(db, "menuItems", itemId);
     await deleteDoc(itemRef);
     res.status(200).send({
