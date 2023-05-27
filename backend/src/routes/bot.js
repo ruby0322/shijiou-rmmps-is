@@ -93,7 +93,7 @@ const handleEvent = async event => {
 }
 
 botRouter.post('/callback', middleware(config), (req, res) => {
-  console.log(req);
+  // console.log(req);
 
   Promise
     .all(req.body.events.map(handleEvent))
