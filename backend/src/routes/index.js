@@ -10,7 +10,6 @@ const router = express.Router();
 import testRouter from './test.js';
 import botRouter from './bot.js';
 import menuRouter from './menu.js';
-import todaySpecialRouter from './todayspecial.js';
 import fohRouter from './foh.js';
 
 router.get("/", (req, res) => {
@@ -21,7 +20,6 @@ router.use('/bot', botRouter);
 router.use(express.json());
 router.use('/test', testRouter);
 router.use("/menu", menuRouter);
-router.use("/todayspecial", todaySpecialRouter);
 router.use("/foh", fohRouter);
 
 // *** End of routers ***
