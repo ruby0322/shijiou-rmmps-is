@@ -34,6 +34,22 @@ waitRequestRouter.get("/getTodayWait", async (req, res) => {
     }
 })
 
+waitRequestRouter.get("/getHistoryWait", async (req, res) => {
+    try {
+        const historyWaitRequests = await getDocs(historyWaitRef);
+        let historyWaitList = [];
+        historyWaitRequests.forEach((document) => {
+            historyWaitList.push({ waitReqId: document.id, ...document.data() });
+            console.log(document.id, " => ", document.data());
+        });
+        res.status(200).json({
+            historyWaitList,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 
 
 waitRequestRouter.put("/notify", async (req, res) => {
@@ -44,8 +60,7 @@ waitRequestRouter.put("/notify", async (req, res) => {
             status: "notified",
         });
         res.status(200).json({
-            message: "wait request status is updated to notified",
-            waitReqId: waitReqId,
+            message: `wait request ${waitReqId} status is updated to notified`,
         });
     } catch (error) {
         console.log(error);
@@ -95,7 +110,6 @@ waitRequestRouter.put("/remove", async (req, res) => {
 
         res.status(200).json({
             message: `wait request ${waitReqId} status is updated to removed`,
-            waitReqId: waitReqId,
         });
     } catch (error) {
         console.log(error);
