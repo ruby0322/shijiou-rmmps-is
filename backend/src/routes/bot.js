@@ -24,11 +24,14 @@ const handleEvent = async event => {
   }
 
   const userMessage = event.message.text;
-
+  let replyPackage = {};
   if (userMessage === "我要候位！") {
     const replyMessage = "不要＝＝";
-    const replyPackage = { type: "text", text: replyMessage };
-    return client.replyMessage(event.replyToken, replyPackage);
+    replyPackage = { type: "text", text: replyMessage };
+  }
+  else if (userMessage === "中午吃什麼") {
+    const replyMessage = "大泰屋";
+    replyPackage = { type: "text", text: replyMessage };
   }
   else {
     const docRef = await addDoc(collection(db, "messages"), {
@@ -38,11 +41,10 @@ const handleEvent = async event => {
     console.log("Document written with ID: ", docRef.id)
   
     // create a echoing text message
-    const echo = { type: 'text', text: userMessage };
-  
+    replyPackage = { type: 'text', text: userMessage };  
     // use reply API
-    return client.replyMessage(event.replyToken, echo);
   }
+  return client.replyMessage(event.replyToken, replyPackage);
 
 }
 
