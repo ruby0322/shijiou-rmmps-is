@@ -72,7 +72,8 @@ const handleEvent = async event => {
         } else {
           reply.push(REPLYS.SYSTEM_ERROR);
         }
-      } catch {
+      } catch (e) {
+        console.log(e);
         reply.push(REPLYS.WAIT_FAILURE);
       }
     } else {
