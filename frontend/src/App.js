@@ -13,7 +13,7 @@ const App = () => {
         <Route exact path='/home/' element={<Home />} />
         <Route exact path='/menu/' element={<Menu />} />
         <Route exact path='/menu-dashboard/' element={<MenuDashboard />} />
-        <Route exact path='/waiting-list-dashboard/' element={<WaitingListDashboard />} />
+        <Route exact path='/waiting-list-dashboard/*' element={<WaitingListDashboard />} />
       </Routes>
     </div>
   );

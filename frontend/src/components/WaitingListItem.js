@@ -5,23 +5,25 @@ import { IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import CheckIcon from '@mui/icons-material/Check';
+import Popover from '@mui/material/Popover';
+import * as React from 'react';
 
-const clickNotification = (lineUserId) => {
-    console.log("clickNotification, lineUserId", lineUserId);
-    // console.log("clickNotification");
-}
-
-const clickCheck = (lineUserId) => {
-    console.log("clickCheck, lineUserId", lineUserId);
-}
-
-const clickDelete = (lineUserId) => {
-    console.log("clickDelete, lineUserId", lineUserId)
-}
 
 const WaitingListItem = ( {item} ) => {
 
     const {waitingNumber, lineUserId, status, groupSize, requestMadeTime, requestAnsweredTime, arriveTime, cancelTime} = item;
+
+    const clickNotification = (lineUserId) => {
+        console.log("clickNotification, lineUserId", lineUserId);
+    }
+    
+    const clickCheck = (lineUserId) => {
+        console.log("clickCheck, lineUserId", lineUserId);
+    }
+    
+    const clickDelete = (lineUserId) => {
+        console.log("clickDelete, lineUserId", lineUserId);
+    }    
 
     return (
         <div>
@@ -42,6 +44,7 @@ const WaitingListItem = ( {item} ) => {
                 <IconButton edge="end" aria-label="delete" onClick={() => clickDelete(lineUserId)}>
                     <DeleteIcon fontSize='large' />
                 </IconButton>
+                
             </ListItem>
         </div>
     )
