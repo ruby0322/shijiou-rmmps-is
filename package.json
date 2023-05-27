@@ -10,9 +10,12 @@
     "url": "git+https://github.com/ruby0322/shijiou-rmmps-is.git"
   },
   "author": "RMMPS",
-  "license": "ISC", 
+  "license": "ISC",
   "bugs": {
     "url": "https://github.com/ruby0322/shijiou-rmmps-is/issues"
   },
-  "homepage": "https://github.com/ruby0322/shijiou-rmmps-is#readme"
+  "homepage": "https://github.com/ruby0322/shijiou-rmmps-is#readme",
+  "dependencies": {
+    "ant-design-icons": "^1.3.3"
+  }
 }
