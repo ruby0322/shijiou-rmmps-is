@@ -1,8 +1,9 @@
+import WaitingList from '../components/WaitingList'
 
 const WaitingListPending = () => {
   return (
     <>
-      Pending
+      <WaitingList/>
     </>
   );
 };
