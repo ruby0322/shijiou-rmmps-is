@@ -101,15 +101,25 @@ const WaitingListPending = () => {
       },
       {
           title: '計時',
-          dataIndex: ['requestAnsweredTime', 'arriveTime'],
+          dataIndex: 'waitReqId',
           key: 'test',
-          render: (text, row) => {
+          render: (waitReqId) => {
+            const requestAnsweredTime = todayWaitReqs[waitReqId].requestAnsweredTime;
+            var minutesDifference = null;
+            if(requestAnsweredTime !== null && todayWaitReqs[waitReqId].isWaiting){
+                minutesDifference = timeMinutesDifference(requestAnsweredTime, now);
+            }else if(requestAnsweredTime != null && todayWaitReqs[waitReqId].status==='arrived'){
+                const arriveTime = todayWaitReqs[waitReqId].arriveTime;
+                if(arriveTime !== null){
+                    minutesDifference = timeMinutesDifference(requestAnsweredTime, arriveTime);
+                }
+            }
               return (
                   // row["arriveTime"] !== undefined ?
                   // arriveTime/cancelTime/removeTime都要檢查
                   //     <div>{row["requestAnsweredTime"]+row["arriveTime"]}</div> :
                   // <div>{ now }</div>
-                  <div>test</div>
+                  <div>{minutesDifference}</div>
               )
           }
       },
@@ -118,6 +128,7 @@ const WaitingListPending = () => {
           dataIndex: 'waitReqId',
           key: 'buttons',
           render: (waitReqId) => {
+              const item = todayWaitReqs[waitReqId];
               return (
                   <div style={{
                           width: '100%',
@@ -125,10 +136,17 @@ const WaitingListPending = () => {
                           flexDirection: 'row',
                           gap: '1.2rem',
                       }}
-                  >
-                    <BellFilled style={{ fontSize: '20px' }} onClick={() => clickNotification(waitReqId) } key={'Notification'+waitReqId}/>
-                    <CheckOutlined style={{ fontSize: '20px' }} onClick={() => clickCheck(waitReqId) } key={'Check'+waitReqId}/>
-                    <DeleteFilled style={{ fontSize: '20px' }} onClick={() => clickDelete(waitReqId) } key={'Delete'+waitReqId}/>
+                  > 
+                    <Button size='small' type='text' disabled={item.status !== 'pending'} onClick={() => clickNotification(waitReqId) } key={'Notification'+waitReqId}>
+                        <BellFilled style={{ fontSize: '16px' }} />
+                    </Button>
+                    <Button size='small' type='text' disabled={!item.isWaiting} onClick={() => clickCheck(waitReqId) } key={'Check'+waitReqId} >
+                        <CheckOutlined style={{ fontSize: '16px' }} />
+                    </Button>
+                    <Button size='small' type='text' disabled={!item.isWaiting} onClick={() => clickDelete(waitReqId) } key={'Delete'+waitReqId}>
+                        <DeleteFilled style={{ fontSize: '16px' }}/>
+                    </Button>
+                    
                   </div>
               );
           }
@@ -141,29 +159,61 @@ const WaitingListPending = () => {
   useEffect(() => {
       const timer = setInterval(() => {
           setNow(Date.now());
+        //   transformData(todayWaitReqs).filter((item) => item.requestAnsweredTime !== null ).map((item) => {
+        //     checkLate(item.requestAnsweredTime, now);
+        //   })
           return ;
       }, 30000);
       return () => clearInterval(timer);
   }, []);
 
+//   const checkLate = (waitReqId) => {
+//     const item = todayWaitReqs[waitReqId];
+//     if(item.status === 'notified'){
+//         console.log(timeMinutesDifference(item.requestAnsweredTime, now));
+//         if(timeMinutesDifference(item.requestAnsweredTime, now) > 10){
+//             late(waitReqId);
+//         }
+//     }
+//   }
+
   const clickNotification = (waitReqId) => {
       console.log("clickNotification, waitReqId", waitReqId);
+      notify(waitReqId);
   }
   
   const clickCheck = (waitReqId) => {
       console.log("clickCheck, waitReqId", waitReqId);
+      done(waitReqId);
   }
   
   const clickDelete = (waitReqId) => {
       console.log("clickDelete, waitReqId", waitReqId);
+      remove(waitReqId);
   }
   
   const clickClear = () => {
       console.log("clickClear");
+      // clear();
   }
   
   const clickRemoveAll = () => {
       console.log("clickRemoveAll");
+      // removeAll();
+  }
+
+  const timeMinutesDifference = (a, b) => {
+    // a < b
+    var difference = b - a;
+
+    var daysDifference = Math.floor(difference/1000/60/60/24);
+    difference -= daysDifference*1000*60*60*24
+
+    var hoursDifference = Math.floor(difference/1000/60/60);
+    difference -= hoursDifference*1000*60*60
+
+    var minutesDifference = Math.floor(difference/1000/60);
+    return minutesDifference;
   }
 
   return (
