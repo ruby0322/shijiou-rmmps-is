@@ -16,7 +16,7 @@ root.render(
         <Router>
           <Routes>
             <Route path='/*' element={ <App /> } />
-            <Route path='/menu' element={<MENU /> } />
+            <Route path='/menu' element={ <MENU /> } />
           </Routes>
         </Router>
       </MenuProvider>
