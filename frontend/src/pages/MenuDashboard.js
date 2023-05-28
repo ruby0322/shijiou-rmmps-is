@@ -22,9 +22,9 @@ const MenuDashBoard = () => {
     setInputName(e.target.value);
   }
 
-  const onChangeInputPrice = (value) => {
-    console.log("input:", value);
-    setInputPrice(value);
+  const onChangeInputPrice = (e) => {
+    console.log("input:", e.target.value);
+    setInputPrice(Number(e.target.value));
   }
 
   const transformData = (data) => {
@@ -104,16 +104,24 @@ const MenuDashBoard = () => {
               </Card>
               
               <Modal title="修改品項" centered open={editModal!==""} onOk={() => {
-                  //updateItemContent(editModal.itemId, inputName, editModal.itemCategory, inputPrice);
+                  let newName = inputName === "" ? editModal.itemName : inputName;
+                  let newPrice = inputPrice === "" ? editModal.price : inputPrice;
+                  updateItemContent(editModal.itemId, newName, editModal.itemCategory, newPrice);
                   setEditModal("");
-                }} onCancel={() => setEditModal("")}>
+                  setInputName("");
+                  setInputPrice("");
+                }} onCancel={() => {
+                  setEditModal("");
+                  setInputName("");
+                  setInputPrice("");
+                }}>
                 <Input size="large" addonBefore="品名" placeholder={editModal.itemName} onChange={onChangeInputName} />
                 <Radio.Group onChange={onChangeRadio} defaultValue={i}>
                   {tabs.map((tab, i0) => {
                     return (<Radio.Button value={i0}>{tab}</Radio.Button>);
                   })}
                 </Radio.Group>
-                <InputNumber size="large" addonBefore="價格" placeholder={editModal.price} onChange={onChangeInputPrice}/>
+                <Input size="large" addonBefore="價格" placeholder={editModal.price} onChange={onChangeInputPrice} />
                 {editModal.status === 'serving' ? 
                     <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>供應中</Button> :
                     <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>售完</Button>
@@ -122,12 +130,22 @@ const MenuDashBoard = () => {
               </Modal>
 
               <Modal title="新增品項" centered open={addModal} onOk={() => {
+                  if(inputName !== "" && inputPrice !== "" && Number(inputPrice) <= 1000 && Number(inputPrice) >= 0){
+                    console.log("filter", inputName, tabs[i], Number(inputPrice));
+                    addMenuItem(inputName, tabs[i], Number(inputPrice));
+                  }
+                  console.log(inputName, tabs[i], Number(inputPrice));
                   setAddModal(false);
-                  // addMenuItem(itemName, itemCategory, price);
-                }} onCancel={() => setAddModal(false)}>
-                <Input size="large" addonBefore="品名" />
+                  setInputName("");
+                  setInputPrice("");
+                }} onCancel={() => {
+                  setAddModal(false);
+                  setInputName("");
+                  setInputPrice("");
+                }}>
+                <Input size="large" addonBefore="品名" required onChange={onChangeInputName}/>
                 <Input disabled size="large" addonBefore="類別" placeholder={tabs[i]} />
-                <InputNumber size="large" addonBefore="價格" />
+                <Input size="large" addonBefore="價格" required onChange={onChangeInputPrice}/>
                 <Button size="large" >供應中</Button>
               </Modal>
             </div>
