@@ -37,7 +37,6 @@ const FOH = () => {
   const [newTableName, setNewTableName] = useState("");
   const [newTableArea, setNewTableArea] = useState("");
 
-  
 
   // 獲取所有桌子
   const getTables = async () => {
