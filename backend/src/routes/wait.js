@@ -59,6 +59,10 @@ waitRequestRouter.put("/notify", async (req, res) => {
         await updateDoc(waitReqRef, {
             status: "notified",
         });
+        // line notify user
+        /*
+
+        */
         res.status(200).json({
             message: `wait request ${waitReqId} status is updated to notified`,
         });
@@ -165,8 +169,8 @@ waitRequestRouter.put("/removeAll", async (req, res) => {
 
 waitRequestRouter.post("/addWaitReq", async (req, res) => {
     try {
-        const { waitingNumber, lineUserId, groupSize, requestMadeTime } = req.body;
-        const newReq = new WaitRequest(waitingNumber, lineUserId, groupSize, requestMadeTime);
+        const { waitingNumber, lineUserId, status, groupSize, requestMadeTime } = req.body;
+        const newReq = new WaitRequest(waitingNumber, lineUserId, status, groupSize, requestMadeTime);
         const newReqRef = await addDoc(todayWaitRef, { ...newReq });
         console.log(newReqRef.id);
         res.status(200).json({
