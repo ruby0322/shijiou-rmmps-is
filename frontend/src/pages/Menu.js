@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from "react";
 import instance from "../axios";
+import { useMenu } from "../hooks/useMenu";
 
 const Menu = () => {
-  const [menuList, setMenuList] = useState([]);
-
-  useEffect(() => {
-    fetchMenu();
-  }, []);
-
-  const fetchMenu = async () => {
-    try {
-      const response = await instance.get("/menu/getMenu");
-      setMenuList(response.data.menuList);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
+  const { menuList } = useMenu();
   return (
     <div>
       <h2>Menu</h2>

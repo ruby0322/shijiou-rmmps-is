@@ -3,28 +3,13 @@ import instance from "../axios";
 import fakeMenu from "../components/fakeMenu";
 import { Tabs, Card, Modal, Input, InputNumber, Button, Radio } from 'antd';
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
+import { useMenu } from "../hooks/useMenu";
 
-const Menu = () => {
-  const [menuList, setMenuList] = useState({});
+const MenuDashBoard = () => {
+  const { menuList, addMenuItem, updateItemContent, updateItemStatus, deleteMenuItem } = useMenu();
+  console.log("eeee", menuList);
   const [editModal, setEditModal] = useState(""); //存 item 物件
   const [addModal, setAddModal] = useState(false); // true/false
-
-  useEffect(() => {
-    fetchMenu();
-  }, [setMenuList]);
-
-  const fetchMenu = async () => {
-    // console.log('f');
-    const res = await instance.get("/menu/getMenu");
-    if (res.status === 200) {
-      setMenuList(res.data);
-      console.log("successful fetch data");
-    } else {
-      return null;
-    }
-  };
-
-
 
   const onChangeRadio = (e) => {
     console.log(`radio checked:${e.target.value}`);
@@ -42,7 +27,7 @@ const Menu = () => {
     });
     console.log(transformedData);
     return transformedData;
-  }
+  };
 
   const tabs = ['咖啡', '茶', '風味飲', '早餐盤', '鹹食', '輕食', '甜點', '每日特餐'];
 
@@ -106,7 +91,10 @@ const Menu = () => {
                 <PlusCircleOutlined style={{ fontSize: '28px'}}/>
               </Card>
               
-              <Modal title="修改品項" centered open={editModal!==""} onOk={() => setEditModal("")} onCancel={() => setEditModal("")}>
+              <Modal title="修改品項" centered open={editModal!==""} onOk={() => {
+                  setEditModal("");
+                  // updateItemContent(itemId, newName, newCategory, newPrice);
+                }} onCancel={() => setEditModal("")}>
                 <Input size="large" addonBefore="品名" placeholder={editModal.itemName} />
                 <Radio.Group onChange={onChangeRadio} defaultValue={i}>
                   {tabs.map((tab, i0) => {
@@ -115,13 +103,16 @@ const Menu = () => {
                 </Radio.Group>
                 <InputNumber size="large" addonBefore="價格" placeholder={editModal.price} />
                 {editModal.status === 'serving' ? 
-                    <Button size="large" >供應中</Button> :
+                    <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>供應中</Button> :
                     <Button size="large" >售完</Button>
                 }
-                <Button size="large" danger >刪除品項</Button>
+                <Button size="large" danger onClick={ () => deleteMenuItem(editModal.itemId) } >刪除品項</Button>
               </Modal>
 
-              <Modal title="新增品項" centered open={addModal} onOk={() => setAddModal(false)} onCancel={() => setAddModal(false)}>
+              <Modal title="新增品項" centered open={addModal} onOk={() => {
+                  setAddModal(false);
+                  // addMenuItem(itemName, itemCategory, price);
+                }} onCancel={() => setAddModal(false)}>
                 <Input size="large" addonBefore="品名" />
                 <Input disabled size="large" addonBefore="類別" placeholder={tabs[i]} />
                 <InputNumber size="large" addonBefore="價格" />
@@ -137,4 +128,4 @@ const Menu = () => {
 
   );
 };
-export default Menu;
+export default MenuDashBoard;

@@ -16,12 +16,12 @@ const menuRouter = express.Router();
 const menuRef = collection(db, "menuItems");
 
 menuRouter.get("/getMenu", async (req, res) => {
-  try {
+  try { 
     const fullMenu = await getDocs(menuRef);
     let menuList = {};
     fullMenu.forEach((document) => {
       menuList[document.id] = document.data();
-      // console.log(document.id, " => ", document.data());
+      console.log(document.id, " => ", document.data());
     });
     res.status(200).json(menuList);
   } catch (error) {
@@ -39,8 +39,8 @@ menuRouter.post("/addItem", async (req, res) => {
     const newItemRef = await addDoc(menuRef, { ...newItem });
     console.log(newItemRef.id);
     res.status(200).json({
-      message: "menu item is added successfully",
-      newItem: { ...newItem, itemId: newItemRef.id },
+      newMenuItem: { ...newItem },
+      itemId: newItemRef.id,
     });
   } catch (error) {
     console.log(error);
@@ -61,7 +61,6 @@ menuRouter.put("/updateItemContent", async (req, res) => {
       price: newPrice,
     });
     res.status(200).json({
-      message: "item content is updated successfully",
       itemId: itemId,
       itemName: newItemName,
       itemCategory: newItemCategory,
@@ -77,12 +76,11 @@ menuRouter.put("/updateItemStatus", async (req, res) => {
     const itemId = req.body.itemId;
     const itemRef = doc(db, "menuItems", itemId);
     const item = await getDoc(itemRef);
-    const newStatus = item.data().status === "serving" ? "soldout" : "serving";
+    const newStatus = (item.data().status === "serving" ? "soldout" : "serving");
     await updateDoc(itemRef, {
       status: newStatus,
     });
     res.status(200).json({
-      message: "item status is updated successfully",
       itemId: itemId,
       status: newStatus,
     });

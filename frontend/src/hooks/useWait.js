@@ -48,7 +48,7 @@ const WaitProvider = (props) => {
         fetchTodayWaitReqs();
         fetchHistoryWaitReqs();
     }, [setHistoryWaitReqs, setTodayWaitReqs]);
-
+ 
     const notify = async (waitReqId) => {
         // 更新本地資料
 
