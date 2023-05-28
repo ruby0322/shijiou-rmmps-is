@@ -3,6 +3,7 @@ import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
+import WaitRequest from '../schema/WaitRequest.js';
 import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc  } from "firebase/firestore";
 
 
@@ -27,6 +28,8 @@ const REPLYS = {
   SYSTEM_ERROR: '系統錯誤，我們正在努力修復中！',
   CANCEL_FAILURE: '很抱歉無法為您取消候位，因為您目前並沒有在候位。',
   CANCEL_SUCCESS: '取消候位成功！',
+  QUERY_GROUP_SIZE: '好的，請問共幾人用餐呢？\n請回覆一個阿拉伯數字，代表人數。',
+  INVALID_GROUP_SIZE: '您輸入的人數不符合格式，候位失敗。\n若要再次候位，請重新按下候位按鈕，或輸入「我要候位」。',
 }
 
 const ADMINS = {
@@ -34,6 +37,8 @@ const ADMINS = {
 }
 
 const getTextMessage = (msg) => ({ type: 'text', text: msg });
+
+const isNumber = str => [...str].every(c => '0123456789'.includes(c));
 
 const pushMessage = async (userId, msg) => {
   console.log(`正在推送訊息給 ${userId}...`);
@@ -79,25 +84,34 @@ const handleEvent = async event => {
   let reply = [];
 
   try {
-    if (userMessage === '我要候位') {
-      if (!user.isWating) {  /* 消費者沒有在候位 */
+
+    if (user.isRequesting) {
+      if (isNumber(userMessage)) {
+        const groupSize = parseInt(userMessage, 10);
         const docRef = doc(db, 'variables', 'lastAssigned');
         const docSnap = await getDoc(docRef);
         
         const assignedNumber = docSnap.data().number+1;
         reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
-        user.isWating = true;
+        user.isWaitng = true;
 
-        await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
+        
         await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
 
         // 新增候位請求至 DB
-        addDoc(collection(db, "cities"), {
-          name: "Tokyo",
-          country: "Japan"
-        });
+        addDoc(collection(db, 'todayWaitRequests'), { ...new WaitRequest(assignedNumber, userId, groupSize) });
 
         reply.push(REPLYS.WAIT_SUCCESS);
+      } else {  
+        reply.push(REPLYS.INVALID_GROUP_SIZE);
+      }
+      user.isRequesting = false;
+      await setDoc(userRef, { ...user });  // 更新使用者
+    } else if (userMessage === '我要候位') {
+      if (!user.isWaitng) {  /* 消費者沒有在候位 */
+        reply.push(REPLYS.QUERY_GROUP_SIZE);
+        user.isRequesting = true;
+        await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
       } else {
         reply.push(REPLYS.ALREADY_WAITING);
       }
