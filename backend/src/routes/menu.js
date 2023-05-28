@@ -18,14 +18,12 @@ const menuRef = collection(db, "menuItems");
 menuRouter.get("/getMenu", async (req, res) => {
   try {
     const fullMenu = await getDocs(menuRef);
-    let menuList = [];
-    fullMenu.forEach((doc) => {
-      menuList.push({ itemId: doc.id, ...doc.data() });
-      console.log(doc.id, " => ", doc.data());
+    let menuList = {};
+    fullMenu.forEach((document) => {
+      menuList[document.id] = document.data();
+      // console.log(document.id, " => ", document.data());
     });
-    res.status(200).json({
-      menuList: menuList,
-    });
+    res.status(200).json(menuList);
   } catch (error) {
     console.log(error);
   }

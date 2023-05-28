@@ -5,20 +5,21 @@ import { Tabs, Card, Modal, Input, InputNumber, Button, Radio } from 'antd';
 import { EditOutlined } from '@ant-design/icons';
 
 const Menu = () => {
-  const [menuList, setMenuList] = useState([]);
+  const [menuList, setMenuList] = useState({});
   const [editModal, setEditModal] = useState(""); //存 item 物件
 
-  // useEffect(() => {
-  //   fetchMenu();
-  // }, []);
+  useEffect(() => {
+    fetchMenu();
+  }, [setMenuList]);
 
   const fetchMenu = async () => {
-    console.log('f')
-    try {
-      // const response = await instance.get("/menu/getMenu");
-      setMenuList(null);
-    } catch (error) {
-      console.log(error);
+    // console.log('f');
+    const res = await instance.get("/menu/getMenu");
+    if (res.status === 200) {
+      setMenuList(res.data);
+      console.log("successful fetch data");
+    } else {
+      return null;
     }
   };
 
@@ -29,6 +30,20 @@ const Menu = () => {
   const onChangeRadio = (e) => {
     console.log(`radio checked:${e.target.value}`);
   };
+
+  const transformData = (data) => {
+    let transformedData = [];
+    Object.keys(data).forEach((key) => {
+      transformedData.push({ itemId: key, ...data[key] });
+    });
+    transformedData.sort((a, b) => {
+      if (a.itemName < b.itemName) return -1;
+      else if (a.itemName > b.itemName) return 1;
+      else return 0;
+    });
+    console.log(transformedData);
+    return transformedData;
+  }
 
   const tabs = ['咖啡', '茶', '風味飲', '早餐盤', '鹹食', '輕食', '甜點', '每日特餐'];
 
@@ -63,7 +78,7 @@ const Menu = () => {
           ))}
       </div> */}
       <Tabs
-        onChange={onChange}
+        // onChange={onChange}
         type="card"
         items={new Array(8).fill(null).map((_, i) => {
           const id = String(i + 1);
@@ -73,7 +88,7 @@ const Menu = () => {
             // children: `Content of Tab Pane ${id}`,
             children: 
             <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '1.2rem', padding: '1rem'}}>
-              {fakeMenu.filter((item) => {
+              {transformData(menuList).filter((item) => {
                 return (item.itemCategory === tabs[i]);
               }).map((item) => {
                 return (
