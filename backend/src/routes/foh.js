@@ -18,15 +18,12 @@ const fohRef = collection(db, fohTableCollectionName);
 fohRouter.get("/getFOH", async (req, res) => {
   try {
     const allTables = await getDocs(fohRef);
-    let tableList = [];
+    let tableList = {};
     allTables.forEach((document) => {
-      tableList.push({ tableId: document.id, ...document.data() });
+      tableList[document.id] = document.data();
       console.log(document.id, " => ", document.data());
     });
-    res.status(200).json({
-      message: "load FOH data successfully",
-      tableList: tableList,
-    });
+    res.status(200).json(tableList);
   } catch (error) {
     console.log(error);
   }

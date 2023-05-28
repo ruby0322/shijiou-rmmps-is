@@ -33,77 +33,82 @@ import { Tabs, Card } from 'antd';
 // ];
 
 const FOH = () => {
-  const [tables, setTables] = useState([]);
-  const [newTableName, setNewTableName] = useState("");
-  const [newTableArea, setNewTableArea] = useState("");
+  const [tables, setTables] = useState({});
+  // const [newTableName, setNewTableName] = useState("");
+  // const [newTableArea, setNewTableArea] = useState("");
 
 
   // 獲取所有桌子
   const getTables = async () => {
     console.log('getTables');
-    setTables([]);
     const response = await instance.get("/foh/getFOH");
     if (response.status === 200) {
-      setTables(response.data.tableList);
+      setTables(response.data);
     } else {
       return null;
     }
   };
 
+  const transformData = (data) => {
+    let transformedData = [];
+    Object.keys(data).forEach((key) => {
+      transformedData.push({ tableId: key, ...data[key] });
+    });
+    transformedData.sort((a, b) => {
+      if (a.tableName < b.tableName) return -1;
+      else if (a.tableName > b.tableName) return 1;
+      else return 0;
+    });
+    console.log(transformedData);
+    return transformedData;
+  }
+
   // 新增桌子
-  const addTable = async () => {
-    try {
-      const response = await instance.post("/foh/addTable", {
-        tableName: newTableName,
-        area: newTableArea,
-      });
-      const newTable = response.data.newTable;
-      setTables((prevTables) => [...prevTables, newTable]);
-      setNewTableName("");
-      setNewTableArea("");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const addTable = async () => {
+  //   try {
+  //     const response = await instance.post("/foh/addTable", {
+  //       tableName: newTableName,
+  //       area: newTableArea,
+  //     });
+  //     const newTable = response.data.newTable;
+  //     setTables((prevTables) => [...prevTables, newTable]);
+  //     setNewTableName("");
+  //     setNewTableArea("");
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   // 更改桌子狀態
-  const updateTableStatus = async (tableId) => {
-    try {
-      await instance.put("/foh/updateTableStatus", { tableId });
-      setTables((prevTables) =>
-        prevTables.map((table) => {
-          if (table.tableId === tableId) {
-            const newStatus =
-              table.status === "occupied" ? "vacant" : "occupied";
-            return { ...table, status: newStatus };
-          }
-          return table;
-        })
-      );
-    } catch (error) {
-      console.log(error);
+  const handleClickTable = async (tableId) => {
+    const res = await instance.put("/foh/updateTableStatus", { tableId });
+    console.log(tables[tableId].tableName);
+    if (res.status === 200) {
+      let newTables = {...tables};
+      console.log(newTables[tableId].status);
+      newTables[tableId].status = (tables[tableId].status === "occupied" ? "vacant" : "occupied");
+      console.log(newTables[tableId].status);
+      setTables(newTables);
+    } else {
+      return null;
     }
   };
 
   // 刪除桌子
-  const deleteTable = async (tableId) => {
-    try {
-      await instance.delete(`/foh/deleteTable/${tableId}`);
-      setTables((prevTables) =>
-        prevTables.filter((table) => table.tableId !== tableId)
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const deleteTable = async (tableId) => {
+  //   try {
+  //     await instance.delete(`/foh/deleteTable/${tableId}`);
+  //     setTables((prevTables) =>
+  //       prevTables.filter((table) => table.tableId !== tableId)
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     getTables();
   }, [setTables]);
-
-  const onChange = (key) => {
-    console.log(key);
-  };
 
   const tabs = ['1F', '2F', '戶外'];
 
@@ -143,7 +148,6 @@ const FOH = () => {
         }
       </div> */}
       <Tabs
-        onChange={onChange}
         type="card"
         items={new Array(3).fill(null).map((_, i) => {
           const id = String(i + 1);
@@ -154,13 +158,13 @@ const FOH = () => {
             children: 
             <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '1.2rem', padding: '1rem'}}>
               {
-                tables.filter((table) => (table.area === tabs[i])).map((table) => {
-                  return (
+                transformData(tables).filter((table) => (table.area === tabs[i])).map((table) => {
+                  return ( 
                     table.status === 'vacant' ? 
-                      <Card key={table.tableId} onClick={() => console.log(table.tableId)} style={{ width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green' }}>
+                      <Card key={table.tableId} onClick={() => handleClickTable(table.tableId)} style={{ width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green' }}>
                         {table.tableName}
                       </Card> :
-                      <Card key={table.tableId} onClick={() => console.log(table.tableId)} style={{ width: '150px', height: '150px', display: 'flex', backgroundColor: '#fe7654', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'red' }}>
+                      <Card key={table.tableId} onClick={() => handleClickTable(table.tableId)} style={{ width: '150px', height: '150px', display: 'flex', backgroundColor: '#fe7654', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'red' }}>
                         {table.tableName}
                       </Card>
                   );
