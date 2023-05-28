@@ -6,7 +6,8 @@ import Customer from '../schema/Customer.js';
 import WaitRequest from '../schema/WaitRequest.js';
 import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc, updateDoc  } from "firebase/firestore";
 import { strftime, isNumber } from '../utils.js';
-import { client, pushMessage, ADMINS, REPLYS, getTextMessage } from '../botUtils.js'
+import { client, pushMessage, ADMINS, REPLYS, getTextMessage } from '../botUtils.js';
+// import { }
 
 dotenv.config();
 
@@ -76,13 +77,14 @@ const handleEvent = async event => {
     } else if (userMessage === "取消候位") {
       if (user.isWaiting) {
         // 更新 WaitRequest 狀態：isWaiting = false, status = 'canceled'
-        await updateDoc(doc(db, 'todayWaitRequests', user.waitRequestId), { isWaiting: false, status: 'canceled' });
+        await updateDoc(doc(db, 'todayWaitRequests', user.waitRequestId), { isWaiting: false, status: 'canceled', arriveTime: Date.now() });
 
         // 更新 Customer 狀態：isWaiting = false, waitRequestId = null
         user.isWaiting = false;
         user.waitRequestId = null;
         await setDoc(userRef, { ...user });
         reply.push(REPLYS.CANCEL_SUCCESS);
+
       } else {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
