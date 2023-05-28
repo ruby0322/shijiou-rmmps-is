@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from "react";
 import instance from "../axios";
+import fakeMenu from "../components/fakeMenu";
+import { Tabs, Card } from 'antd';
 
-const MenuDashboard = () => {
+const Menu = () => {
   const [menuList, setMenuList] = useState([]);
-  const [itemName, setItemName] = useState("");
-  const [itemCategory, setItemCategory] = useState("");
-  const [price, setPrice] = useState("");
 
   useEffect(() => {
     fetchMenu();
@@ -20,84 +19,15 @@ const MenuDashboard = () => {
     }
   };
 
-  const addMenuItem = async () => {
-    try {
-      const response = await instance.post("/menu/addItem", {
-        itemName,
-        itemCategory,
-        price,
-      });
-      console.log(response.data);
-      fetchMenu();
-    } catch (error) {
-      console.log(error);
-    }
+  const onChange = (key) => {
+    console.log(key);
   };
 
-  const updateItemContent = async (itemId, newName, newCategory, newPrice) => {
-    try {
-      const response = await instance.put("/menu/updateItemContent", {
-        itemId,
-        newName,
-        newCategory,
-        newPrice,
-      });
-      console.log(response.data);
-      fetchMenu();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const updateItemStatus = async (itemId, status) => {
-    try {
-      const response = await instance.put("/menu/updateItemStatus", {
-        itemId,
-      });
-      console.log(response.data);
-      fetchMenu();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const deleteMenuItem = async (itemId) => {
-    try {
-      const response = await instance.delete(`/menu/deleteItem/${itemId}`);
-      console.log(response.data);
-      fetchMenu();
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const tabs = ['咖啡', '茶', '風味飲', '早餐盤', '鹹食', '輕食', '甜點', '每日特餐'];
 
   return (
     <div>
-      <h2>Menu Dashboard</h2>
-      <div>
-        <h3>Add Menu Item</h3>
-        <input
-          type="text"
-          placeholder="Item Name"
-          value={itemName}
-          onChange={(e) => setItemName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Item Category"
-          value={itemCategory}
-          onChange={(e) => setItemCategory(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Price"
-          value={price}
-          onChange={(e) => setPrice(e.target.value)}
-        />
-        <button type="button" onClick={addMenuItem}>
-          Add Item
-        </button>
-      </div>
+      <h2>Menu</h2>
       <div>
         <h3>Normal Items</h3>
         {menuList
@@ -108,23 +38,6 @@ const MenuDashboard = () => {
               <p>Category: {item.itemCategory}</p>
               <p>Price: {item.price}</p>
               <p>Status: {item.status}</p>
-              <button
-                type="button"
-                onClick={() =>
-                  updateItemContent(item.itemId, "New Name", "New Category", 0)
-                }
-              >
-                Update Content
-              </button>
-              <button
-                type="button"
-                onClick={() => updateItemStatus(item.itemId, item.status)}
-              >
-                {item.status === "serving" ? "Set Sold Out" : "Set Serving"}
-              </button>
-              <button type="button" onClick={() => deleteMenuItem(item.itemId)}>
-                Delete Item
-              </button>
             </div>
           ))}
       </div>
@@ -138,27 +51,38 @@ const MenuDashboard = () => {
               <p>Category: {item.itemCategory}</p>
               <p>Price: {item.price}</p>
               <p>Status: {item.status}</p>
-              <button
-                type="button"
-                onClick={() =>
-                  updateItemContent(item.itemId, "New Name", "New Category", 0)
-                }
-              >
-                Update Content
-              </button>
-              <button
-                type="button"
-                onClick={() => updateItemStatus(item.itemId, item.status)}
-              >
-                {item.status === "serving" ? "Set Sold Out" : "Set Serving"}
-              </button>
-              <button type="button" onClick={() => deleteMenuItem(item.itemId)}>
-                Delete Item
-              </button>
             </div>
           ))}
       </div>
+      <Tabs
+        onChange={onChange}
+        type="card"
+        items={new Array(8).fill(null).map((_, i) => {
+          const id = String(i + 1);
+          return {
+            label: tabs[i],
+            key: id,
+            // children: `Content of Tab Pane ${id}`,
+            children: 
+            <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '1.2rem', padding: '1rem'}}>
+              {fakeMenu.filter((item) => {
+                return (item.itemCategory == tabs[i]);
+              }).map((item) => {
+                return (
+                  item.status === 'serving' ? 
+                  <Card title={'筆'} onClick={() => console.log(item.itemName)} style={{ width: '150px', backgroundColor: 'lightgreen', fontSize: "16px", color: 'black'}}>{item.itemName}</Card> :
+                  <Card onClick={() => console.log(item.itemName)} style={{width: '150px', display: 'flex', backgroundColor: 'lightgray', alignItems: "center", justifyContent: "center", fontSize: "16px", color: 'gray'}}>{item.itemName}</Card>
+                );
+              })}
+              {/* <Card style={{width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green'}}>A1</Card>
+              <Card style={{width: '150px', height: '150px', display: 'flex', backgroundColor: '#fe7654', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'red'}}>A2</Card> */}
+            </div>
+          };
+        })}
+        size="large"
+      />
     </div>
+
   );
 };
-export default MenuDashboard;
+export default Menu;
