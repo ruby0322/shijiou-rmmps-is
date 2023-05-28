@@ -3,7 +3,7 @@ import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
-import { collection, setDoc, doc, getDoc  } from "firebase/firestore";
+import { collection, setDoc, doc, getDoc, getDocs, query, where  } from "firebase/firestore";
 
 
 dotenv.config();
@@ -18,6 +18,8 @@ const config = {
 
 const client = new Client(config);
 
+const todayWaitRef = collection(db, 'todayWaitRequests');
+
 const REPLYS = {
   ALREADY_WAITING: '很抱歉無法為您候位，因為您已在候位隊伍中。請耐心等候！',
   WAIT_SUCCESS: '候位成功！',
@@ -27,11 +29,11 @@ const REPLYS = {
   CANCEL_SUCCESS: '取消候位成功！',
 }
 
-const getTextMessage = (msg) => ({ type: 'text', text: msg });
-
 const ADMINS = {
   RUBY: 'U3dc4e9a67c16a598c1d4cf605d17065f',
 }
+
+const getTextMessage = (msg) => ({ type: 'text', text: msg });
 
 const pushMessage = async (userId, msg) => {
   console.log(`正在推送訊息給 ${userId}...`);
@@ -88,6 +90,13 @@ const handleEvent = async event => {
 
         await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
         await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
+
+        // 新增候位請求至 DB
+        addDoc(collection(db, "cities"), {
+          name: "Tokyo",
+          country: "Japan"
+        });
+
         reply.push(REPLYS.WAIT_SUCCESS);
       } else {
         reply.push(REPLYS.ALREADY_WAITING);
@@ -100,8 +109,26 @@ const handleEvent = async event => {
       } else {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
-    } else if (userMessage === "") {
-      
+    } else if (userMessage === "候位狀況") {
+      const q = query(todayWaitRef, where('isWating', '==', true))
+      const waitingRequestsSnapShot = await getDocs(q);
+      if (user.isWating) {
+
+        let userRequestMadeTime = 0;
+        let others = [];
+        waitingRequestsSnapShot.forEach((document) => {
+          if (document.data().lineUserId !== userId) {
+            others.push(document.data().requestMadeTime);
+          } else {
+            userRequestMadeTime = document.data().requestMadeTime;
+          }
+        });
+        const beforeUserCount = others.filter(x => x < userRequestMadeTime).length;
+        reply.push(`隊伍中還有 ${beforeUserCount} 組客人在您的前面。請耐心等候～`);
+        
+      } else {
+        reply.push(`隊伍中有 ${waitingRequestsSnapShot.length} 組客人正在候位。`);
+      }
     } else if (userMessage === "") {
       
     } else {
@@ -131,4 +158,4 @@ botRouter.post('/callback', middleware(config), (req, res) => {
     });
 });
 
-export default { botRouter, notifyLINEUser };
+export { botRouter, notifyLINEUser };
