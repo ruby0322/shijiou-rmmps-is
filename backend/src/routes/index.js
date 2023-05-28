@@ -8,7 +8,7 @@ const router = express.Router();
 // Usage: router.use('/someApi', someApiRouter);
 
 import testRouter from './test.js';
-import botRouter from './bot.js';
+import { botRouter } from './bot.js';
 import menuRouter from './menu.js';
 import fohRouter from './foh.js';
 import waitRequestRouter from './wait.js';

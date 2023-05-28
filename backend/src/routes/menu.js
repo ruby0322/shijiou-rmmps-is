@@ -60,12 +60,9 @@ menuRouter.put("/updateItemContent", async (req, res) => {
       itemCategory: newItemCategory,
       price: newPrice,
     });
-    res.status(200).json({
-      itemId: itemId,
-      itemName: newItemName,
-      itemCategory: newItemCategory,
-      price: newPrice,
-    });
+    const item = await getDoc(itemRef);
+    // const newStatus = (item.data().status === "serving" ? "soldout" : "serving");
+    res.status(200).json(item.data());
   } catch (error) {
     console.log(error);
   }
