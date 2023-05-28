@@ -3,7 +3,7 @@ import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
-import { collection, setDoc, doc, getDoc  } from "firebase/firestore";
+import { collection, setDoc, doc, getDoc, getDocs  } from "firebase/firestore";
 
 
 dotenv.config();
@@ -34,8 +34,13 @@ const ADMINS = {
 }
 
 const pushMessage = async (userId, msg) => {
-  console.log(`正在推送訊息給 ${userId}`);
+  console.log(`正在推送訊息給 ${userId}...`);
+  console.log(`推送訊息內容為：\n${msg}`);
   await client.pushMessage(userId, getTextMessage(msg));
+}
+
+const notifyLINEUser = async (userId) => {
+  await pushMessage(userId, '親愛的顧客，您的座位準備好囉！\n我們將為您保留座位 10 分鐘，請您儘快到店報到～');
 }
 
 const handleEvent = async event => {
@@ -80,7 +85,7 @@ const handleEvent = async event => {
         const assignedNumber = docSnap.data().number+1;
         reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
         user.isWating = true;
-        
+
         await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
         await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
         reply.push(REPLYS.WAIT_SUCCESS);
@@ -95,8 +100,17 @@ const handleEvent = async event => {
       } else {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
-    } else if (userMessage === "") {
-      
+    } else if (userMessage === "候位狀況") {
+      if (user.isWating) {
+        // const todayWaitRequests = await getDocs(collection(db, 'todayWaitRequests'));
+        // todayWaitRequests.forEach((document) => {
+        //   todayWaitList[document.id] = document.data();
+        //   console.log(document.id, " => ", document.data());
+        // });
+        // todayWaitRequests.filter(x => x.data().isWating && x.data().requestMadeTime < )
+      } else {
+
+      }
     } else if (userMessage === "") {
       
     } else {
@@ -126,4 +140,4 @@ botRouter.post('/callback', middleware(config), (req, res) => {
     });
 });
 
-export default botRouter;
+export { botRouter, notifyLINEUser };
