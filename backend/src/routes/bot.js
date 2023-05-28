@@ -110,7 +110,7 @@ const handleEvent = async event => {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
     } else if (userMessage === "候位狀況") {
-      const q = query(todayWaitRef, where('isWating', '==', true))
+      const q = query(todayWaitRef, where('isWaiting', '==', true))
       const waitingRequestsSnapShot = await getDocs(q);
       if (user.isWating) {
 
