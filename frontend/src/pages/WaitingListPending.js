@@ -59,6 +59,11 @@ const WaitingListPending = () => {
           title: '候位時間',
           dataIndex: 'requestMadeTime',
           key: 'requestMadeTime',
+          render: (requestMadeTime) => {
+            return (
+                <div>{transformTime(requestMadeTime)}</div>
+            )
+          }
       },
       {
           title: '通知時間',
@@ -177,6 +182,16 @@ const WaitingListPending = () => {
 //     }
 //   }
 
+  const transformTime = (timestamp) => {
+    const date = new Date(timestamp);
+    var minutes = date.getMinutes();
+    if(minutes < 10){
+        minutes = '0' + minutes;
+    }
+    var dateFormat = date.getHours() + ":" + minutes;
+    return dateFormat;
+  }
+
   const clickNotification = (waitReqId) => {
       console.log("clickNotification, waitReqId", waitReqId);
       notify(waitReqId);
@@ -194,12 +209,12 @@ const WaitingListPending = () => {
   
   const clickClear = () => {
       console.log("clickClear");
-      // clear();
+      clear();
   }
   
   const clickRemoveAll = () => {
       console.log("clickRemoveAll");
-      // removeAll();
+      removeAll();
   }
 
   const timeMinutesDifference = (a, b) => {
