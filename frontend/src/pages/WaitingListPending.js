@@ -176,7 +176,10 @@ const WaitingListPending = () => {
         //     checkLate(waitReqId);
         //   })
             //console.log(transformData(todayWaitReqs)[0].waitReqId)
-            checkLate(transformData(todayWaitReqs)[0].waitReqId);
+            transformData(todayWaitReqs).map((item) => {
+                checkLate(transformData(item.waitReqId));
+            })
+            
           return ;
       }, 30000);
       return () => clearInterval(timer);
