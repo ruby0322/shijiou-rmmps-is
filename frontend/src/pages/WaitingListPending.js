@@ -175,10 +175,12 @@ const WaitingListPending = () => {
         //   transformData(todayWaitReqs).filter((item) => item.requestAnsweredTime !== null ).map((item) => {
         //     checkLate(waitReqId);
         //   })
-            //console.log(transformData(todayWaitReqs)[0].waitReqId)
-            transformData(todayWaitReqs).map((item) => {
-                checkLate(transformData(item.waitReqId));
-            })
+            // console.log("0:",transformData(todayWaitReqs)[0].waitReqId)
+            // console.log(transformData(todayWaitReqs))
+            // transformData(todayWaitReqs).map((item) => {
+            //     //console.log(item)
+            //     checkLate(item.waitReqId);
+            // })
             
           return ;
       }, 30000);
@@ -187,10 +189,10 @@ const WaitingListPending = () => {
 
   const checkLate = (waitReqId) => {
     const item = todayWaitReqs[waitReqId];
-    // console.log(item.requestAnsweredTime);
+    console.log(item);
     if(item.status === 'notified'){
-        // console.log(timeMinutesDifference(item.requestAnsweredTime, now));
-        if(timeMinutesDifference(item.requestAnsweredTime, now) >= 10){
+        console.log(timeMinutesDifference(item.requestAnsweredTime, now));
+        if(timeMinutesDifference(item.requestAnsweredTime, now) > 10){
             late(waitReqId);
         }
     }
