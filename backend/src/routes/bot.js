@@ -3,7 +3,7 @@ import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
-import { collection, setDoc, doc, getDoc, getDocs, query, where  } from "firebase/firestore";
+import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc  } from "firebase/firestore";
 
 
 dotenv.config();
