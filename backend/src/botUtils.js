@@ -1,5 +1,5 @@
 import dotenv from 'dotenv-defaults';
-import { Client } from '@line/bot-sdk';
+import { Client, middleware as botMiddleware } from '@line/bot-sdk';
 
 dotenv.config();
 
@@ -37,5 +37,6 @@ const REPLYS = {
   };
   
 const client = new Client(config);
+const middleware = botMiddleware(config);
   
-export { REPLYS, ADMINS, getTextMessage, pushMessage, notifyLINEUser, client };
+export { REPLYS, ADMINS, getTextMessage, pushMessage, notifyLINEUser, client, middleware };
