@@ -33,8 +33,9 @@ const ADMINS = {
   RUBY: 'U3dc4e9a67c16a598c1d4cf605d17065f',
 }
 
-const pushMessage = (userId, msg) => {
-  client.pushMessage(userId, getTextMessage(msg));
+const pushMessage = async (userId, msg) => {
+  console.log(`正在推送訊息給 ${userId}`);
+  await client.pushMessage(userId, getTextMessage(msg));
 }
 
 const handleEvent = async event => {
@@ -108,7 +109,7 @@ const handleEvent = async event => {
   
   } catch (e) {
     console.log(e);
-    pushMessage(ADMINS.RUBY, `系統錯誤，錯誤訊息如下：\n${e}`)
+    await pushMessage(ADMINS.RUBY, `[系統推送] 系統錯誤，錯誤訊息如下：\n${e}`)
     reply.push(REPLYS.SYSTEM_ERROR);
   }
   // use reply API
