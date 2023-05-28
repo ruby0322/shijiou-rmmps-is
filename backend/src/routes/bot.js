@@ -34,8 +34,13 @@ const ADMINS = {
 }
 
 const pushMessage = async (userId, msg) => {
-  console.log(`正在推送訊息給 ${userId}`);
+  console.log(`正在推送訊息給 ${userId}...`);
+  console.log(`推送訊息內容為：\n${msg}`);
   await client.pushMessage(userId, getTextMessage(msg));
+}
+
+const notifyLINEUser = async (userId) => {
+  await pushMessage(userId, '親愛的顧客，您的座位準備好囉！\n我們將為您保留座位 10 分鐘，請您儘快到店報到～');
 }
 
 const handleEvent = async event => {
@@ -80,7 +85,7 @@ const handleEvent = async event => {
         const assignedNumber = docSnap.data().number+1;
         reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
         user.isWating = true;
-        
+
         await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
         await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
         reply.push(REPLYS.WAIT_SUCCESS);
@@ -126,4 +131,4 @@ botRouter.post('/callback', middleware(config), (req, res) => {
     });
 });
 
-export default botRouter;
+export default { botRouter, notifyLINEUser };
