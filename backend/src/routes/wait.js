@@ -10,7 +10,7 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { notifyLINEUser } from "./bot.js";
+import { notifyLINEUser } from '../botUtils.js';
 
 const waitRequestRouter = express.Router();
 const todayWaitCollection = "todayWaitRequests";
