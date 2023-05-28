@@ -25,22 +25,20 @@ const WaitProvider = (props) => {
     const [historyWaitReqs, setHistoryWaitReqs] = useState({});
 
     const fetchTodayWaitReqs = async () => {
-        // return {};
-        const res = await instance.get('wait/getTodayWait');
-        if (res.status === 200) {
+        try {
+            const res = await instance.get('wait/getTodayWait');
             setTodayWaitReqs(res.data);
-        } else {
-            return null;
+        } catch (error) {
+            console.log(error);
         }
     }
 
     const fetchHistoryWaitReqs = async () => {
-        // return {};
-        const res = await instance.get('wait/getHistoryWait');
-        if (res.status === 200) {
+        try {
+            const res = await instance.get('wait/getHistoryWait');
             setHistoryWaitReqs(res.data);
-        } else {
-            return null;
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -50,26 +48,89 @@ const WaitProvider = (props) => {
     }, [setHistoryWaitReqs, setTodayWaitReqs]);
  
     const notify = async (waitReqId) => {
-        // 更新本地資料
-
-        // 更新 DB 資料
+        try {
+            const res = await instance.put("/wait/notify", { waitReqId });
+            let newTodayWaitReqs = { ...todayWaitReqs };
+            newTodayWaitReqs[waitReqId].status = "notified";
+            setTodayWaitReqs(newTodayWaitReqs);
+        } catch (error) {
+            console.log(error); 
+        }
     };
 
     const late = async (waitReqId) => {
+        try {
+            const res = await instance.put("/wait/late", { waitReqId });
+            let newTodayWaitReqs = { ...todayWaitReqs };
+            newTodayWaitReqs[waitReqId].status = "late";
+            setTodayWaitReqs(newTodayWaitReqs);
+        } catch (error) {
+            console.log(error); 
+        }
     };
 
     const done = async (waitReqId) => {
+        try {
+            const res = await instance.put("/wait/done", { waitReqId });
+            let newTodayWaitReqs = { ...todayWaitReqs };
+            newTodayWaitReqs[waitReqId].status = "arrived";
+            newTodayWaitReqs[waitReqId].isWaiting = false;
+            setTodayWaitReqs(newTodayWaitReqs);
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const remove = async (waitReqId) => {
+        try {
+            const res = await instance.put("/wait/remove", { waitReqId });
+            let newTodayWaitReqs = { ...todayWaitReqs };
+            newTodayWaitReqs[waitReqId].status = "removed";
+            setTodayWaitReqs(newTodayWaitReqs);
+        } catch (error) {
+            console.log(error); 
+        }
     };
 
     const clear = async () => {
+        try {
+            const res = await instance.put("/wait/clear");
 
+            let newTodayWaitReqs = { ...todayWaitReqs };
+            for (const waitReq in newTodayWaitReqs) {
+                if (newTodayWaitReqs[waitReq].isWaiting === false) {
+                    delete newTodayWaitReqs[waitReq];
+                }
+            }
+            setTodayWaitReqs(newTodayWaitReqs);
+
+            let oldHistoryWaitReqs = { ...historyWaitReqs };
+            const newlyAddHistoryWaitReqs = res.data;
+            const newHistoryWaitReqs = {
+                ...oldHistoryWaitReqs,
+                ...newlyAddHistoryWaitReqs,
+            };
+            setHistoryWaitReqs(newHistoryWaitReqs);
+
+        } catch (error) {
+            console.log(error); 
+        }
     };
 
     const removeAll = async () => {
-
+        try {
+            const res = await instance.put("/wait/removeAll");
+            let oldHistoryWaitReqs = { ...historyWaitReqs };
+            const newlyAddHistoryWaitReqs = res.data;
+            const newHistoryWaitReqs = {
+                ...oldHistoryWaitReqs,
+                ...newlyAddHistoryWaitReqs,
+            };
+            setHistoryWaitReqs(newHistoryWaitReqs);
+            setTodayWaitReqs({});
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (

@@ -23,8 +23,8 @@ import { useWait } from '../hooks/useWait';
 
 const WaitingListPending = () => {
 
-  const { todayWaitReqs } = useWait();
-    
+  const { todayWaitReqs, notify, late, done, remove, clear, removeAll } = useWait();
+
   const transformData = (data) => {
     let transformedData = [];
     Object.keys(data).forEach((key) => {
