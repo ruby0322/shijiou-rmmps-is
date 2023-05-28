@@ -52,6 +52,7 @@ waitRequestRouter.put("/notify", async (req, res) => {
     const waitReqRef = doc(db, todayWaitCollection, waitReqId);
     await updateDoc(waitReqRef, {
       status: "notified",
+      requestAnsweredTime: Date.now(),
     });
     const docSnap = await getDoc(waitReqRef);
     const lineUserId = docSnap.data().lineUserId;
