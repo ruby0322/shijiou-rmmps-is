@@ -118,7 +118,10 @@ const handleEvent = async event => {
       if (user.isWaiting) {
         const q = query(todayWaitRef, where('lineUserId', '==', userId));
         const waitingRequestsSnapShot = await getDocs(q);
-        let userWaitReqest = waitingRequestsSnapShot[0].data();
+        let userWaitReqest;
+        waitingRequestsSnapShot.forEach((document) => {
+          userWaitReqest = document.data();
+        });
         userWaitReqest.isWaiting = false;
         userWaitReqest.status = 'canceled';
         user.isWaiting = false;
