@@ -6,7 +6,7 @@ import "./css/menu.css";
 import { useMenu } from "../hooks/useMenu";
 
 
-const Menu = () => {
+const MENU = () => {
   const { menuList } = useMenu();
   console.log(menuList);
   const [activeKey, setActiveKey] = useState("1");
@@ -24,6 +24,19 @@ const Menu = () => {
     setIsWelcomePage(false);
   };
 
+  const transformData = (data) => {
+    let transformedData = [];
+    Object.keys(data).forEach((key) => {
+      transformedData.push({ itemId: key, ...data[key] });
+    });
+    transformedData.sort((a, b) => {
+      if (a.itemName < b.itemName) return -1;
+      else if (a.itemName > b.itemName) return 1;
+      else return 0;
+    });
+    console.log(transformedData);
+    return transformedData;
+  };
   // const fetchMenu = async () => {
   //   try {
   //     const response = await instance.get("/menu/getMenu");
@@ -75,12 +88,12 @@ const Menu = () => {
                     <CaretLeftOutlined />
                   </button>
                   <div className="menu">
-                    {menuList
+                    {transformData(menuList)
                       .filter((item) => item.itemCategory === category)
                       .map((item) => (
                         <div
                           key={item.itemId}
-                          className="menuItem"
+                          className="menuItem menu-font"
                           style={{
                             opacity: item.status == "serving" ? 1 : 0.3,
                           }}
@@ -118,4 +131,4 @@ const Menu = () => {
     </>
   );
 };
-export default Menu;
+export default MENU;

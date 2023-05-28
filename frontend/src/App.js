@@ -1,7 +1,8 @@
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate, Navigate } from "react-router-dom";
 import Home from "./pages/Home.js";
 import Foh from "./pages/Foh.js";
 import MenuDashboard from "./pages/MenuDashboard.js";
+import MENU from "./pages/Menu.js";
 import WaitingListDashboard from "./pages/WaitingListDashboard.js";
 import {
   MenuFoldOutlined,
@@ -89,9 +90,13 @@ const App = () => {
             }}
         >
           <Routes>
-            <Route exact path="/" element={<Home />} />
+            <Route
+              path="*"
+              element={<Navigate to="/menu-dashboard/" replace />}
+            />
+            {/* <Route exact path="/" element={<Home />} /> */}
             <Route exact path="/foh/" element={<Foh />} />
-            <Route exact path="/menu/" element={<Menu />} />
+            <Route exact path="/menu/" element={<MENU />} />
             <Route exact path="/menu-dashboard/" element={<MenuDashboard />} />
             <Route
               exact
