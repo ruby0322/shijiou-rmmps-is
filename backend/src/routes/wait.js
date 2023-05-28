@@ -164,7 +164,7 @@ waitRequestRouter.put("/clear", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-});
+}); 
 
 waitRequestRouter.put("/removeAll", async (req, res) => {
   try {
