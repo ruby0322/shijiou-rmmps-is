@@ -93,7 +93,7 @@ const handleEvent = async event => {
         
         const assignedNumber = docSnap.data().number+1;
         reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
-        user.isWaitng = true;
+        user.isWaiting = true;
 
         
         await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
@@ -108,7 +108,7 @@ const handleEvent = async event => {
       user.isRequesting = false;
       await setDoc(userRef, { ...user });  // 更新使用者
     } else if (userMessage === '我要候位') {
-      if (!user.isWaitng) {  /* 消費者沒有在候位 */
+      if (!user.isWaiting) {  /* 消費者沒有在候位 */
         reply.push(REPLYS.QUERY_GROUP_SIZE);
         user.isRequesting = true;
         await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
@@ -116,8 +116,8 @@ const handleEvent = async event => {
         reply.push(REPLYS.ALREADY_WAITING);
       }
     } else if (userMessage === "取消候位") {
-      if (user.isWating) {
-        user.isWating = false;
+      if (user.isWaiting) {
+        user.isWaiting = false;
         reply.push(REPLYS.CANCEL_SUCCESS);
         await setDoc(userRef, { ...user });
       } else {
@@ -126,7 +126,7 @@ const handleEvent = async event => {
     } else if (userMessage === "候位狀況") {
       const q = query(todayWaitRef, where('isWaiting', '==', true))
       const waitingRequestsSnapShot = await getDocs(q);
-      if (user.isWating) {
+      if (user.isWaiting) {
 
         let userRequestMadeTime = 0;
         let others = [];
