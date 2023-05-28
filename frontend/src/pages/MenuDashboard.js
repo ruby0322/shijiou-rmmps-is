@@ -116,7 +116,6 @@ const Menu = () => {
                 <PlusCircleOutlined style={{ fontSize: '28px'}}/>
               </Card>
               
-<<<<<<< HEAD
               <Modal title="修改品項" centered open={editModal!==""} onOk={() => {
                   let newName = inputName === "" ? editModal.itemName : inputName;
                   let newPrice = inputPrice === "" ? editModal.price : inputPrice;
@@ -130,10 +129,6 @@ const Menu = () => {
                   setInputPrice("");
                 }}>
                 <Input size="large" addonBefore="品名" placeholder={editModal.itemName} onChange={onChangeInputName} />
-=======
-              <Modal title="修改品項" centered open={editModal!==""} onOk={() => setEditModal("")} onCancel={() => setEditModal("")}>
-                <Input size="large" addonBefore="品名" placeholder={editModal.itemName} />
->>>>>>> bot-features
                 <Radio.Group onChange={onChangeRadio} defaultValue={i}>
                   {tabs.map((tab, i0) => {
                     return (<Radio.Button value={i0}>{tab}</Radio.Button>);
