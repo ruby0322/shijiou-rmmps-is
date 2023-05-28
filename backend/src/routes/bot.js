@@ -3,14 +3,9 @@ import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
-<<<<<<< HEAD
-import { collection, setDoc, doc, getDoc, getDocs  } from "firebase/firestore";
-
-=======
 import WaitRequest from '../schema/WaitRequest.js';
 import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc  } from "firebase/firestore";
 import { strftime, isNumber } from '../utils.js';
->>>>>>> bot-features
 
 dotenv.config();
 
@@ -128,17 +123,6 @@ const handleEvent = async event => {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
     } else if (userMessage === "候位狀況") {
-<<<<<<< HEAD
-      if (user.isWating) {
-        // const todayWaitRequests = await getDocs(collection(db, 'todayWaitRequests'));
-        // todayWaitRequests.forEach((document) => {
-        //   todayWaitList[document.id] = document.data();
-        //   console.log(document.id, " => ", document.data());
-        // });
-        // todayWaitRequests.filter(x => x.data().isWating && x.data().requestMadeTime < )
-      } else {
-
-=======
       const q = query(todayWaitRef, where('isWaiting', '==', true))
       const waitingRequestsSnapShot = await getDocs(q);
       if (user.isWaiting) {
@@ -160,7 +144,6 @@ const handleEvent = async event => {
         
       } else {
         reply.push(`隊伍中有 ${waitingRequestsSnapShot.length} 組客人正在候位。`);
->>>>>>> bot-features
       }
     } else if (userMessage === "") {
       
