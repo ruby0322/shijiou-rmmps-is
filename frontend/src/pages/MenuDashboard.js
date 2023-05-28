@@ -10,10 +10,22 @@ const MenuDashBoard = () => {
   console.log("eeee", menuList);
   const [editModal, setEditModal] = useState(""); //存 item 物件
   const [addModal, setAddModal] = useState(false); // true/false
+  const [inputName, setInputName] = useState(""); // input value of Modal - name
+  const [inputPrice, setInputPrice] = useState(0); // input value of Model - price
 
   const onChangeRadio = (e) => {
     console.log(`radio checked:${e.target.value}`);
   };
+
+  const onChangeInputName = (e) => {
+    console.log("input:", e.target.value);
+    setInputName(e.target.value);
+  }
+
+  const onChangeInputPrice = (value) => {
+    console.log("input:", value);
+    setInputPrice(value);
+  }
 
   const transformData = (data) => {
     let transformedData = [];
@@ -92,19 +104,19 @@ const MenuDashBoard = () => {
               </Card>
               
               <Modal title="修改品項" centered open={editModal!==""} onOk={() => {
+                  //updateItemContent(editModal.itemId, inputName, editModal.itemCategory, inputPrice);
                   setEditModal("");
-                  // updateItemContent(itemId, newName, newCategory, newPrice);
                 }} onCancel={() => setEditModal("")}>
-                <Input size="large" addonBefore="品名" placeholder={editModal.itemName} />
+                <Input size="large" addonBefore="品名" placeholder={editModal.itemName} onChange={onChangeInputName} />
                 <Radio.Group onChange={onChangeRadio} defaultValue={i}>
                   {tabs.map((tab, i0) => {
                     return (<Radio.Button value={i0}>{tab}</Radio.Button>);
                   })}
                 </Radio.Group>
-                <InputNumber size="large" addonBefore="價格" placeholder={editModal.price} />
+                <InputNumber size="large" addonBefore="價格" placeholder={editModal.price} onChange={onChangeInputPrice}/>
                 {editModal.status === 'serving' ? 
                     <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>供應中</Button> :
-                    <Button size="large" >售完</Button>
+                    <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>售完</Button>
                 }
                 <Button size="large" danger onClick={ () => deleteMenuItem(editModal.itemId) } >刪除品項</Button>
               </Modal>
