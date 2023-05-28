@@ -21,14 +21,12 @@ const historyWaitRef = collection(db, historyWaitCollection);
 waitRequestRouter.get("/getTodayWait", async (req, res) => {
     try {
         const todayWaitRequests = await getDocs(todayWaitRef);
-        let todayWaitList = [];
-        todayWaitRequests.forEach((doc) => {
-            todayWaitList.push({ waitReqId: doc.id, ...doc.data() });
-            console.log(doc.id, " => ", doc.data());
+        let todayWaitList = {};
+        todayWaitRequests.forEach((document) => {
+            todayWaitList[document.id] = document.data();
+            console.log(document.id, " => ", document.data());
         });
-        res.status(200).json({
-            todayWaitList,
-        });
+        res.status(200).json(todayWaitList);
     } catch (error) {
         console.log(error);
     }
@@ -37,20 +35,16 @@ waitRequestRouter.get("/getTodayWait", async (req, res) => {
 waitRequestRouter.get("/getHistoryWait", async (req, res) => {
     try {
         const historyWaitRequests = await getDocs(historyWaitRef);
-        let historyWaitList = [];
+        let historyWaitList = {};
         historyWaitRequests.forEach((document) => {
-            historyWaitList.push({ waitReqId: document.id, ...document.data() });
+            historyWaitList[document.id] = document.data();
             console.log(document.id, " => ", document.data());
         });
-        res.status(200).json({
-            historyWaitList,
-        });
+        res.status(200).json(historyWaitList);
     } catch (error) {
         console.log(error);
     }
 })
-
-
 
 waitRequestRouter.put("/notify", async (req, res) => {
     try {
@@ -59,6 +53,10 @@ waitRequestRouter.put("/notify", async (req, res) => {
         await updateDoc(waitReqRef, {
             status: "notified",
         });
+        // line notify user
+        /*
+
+        */
         res.status(200).json({
             message: `wait request ${waitReqId} status is updated to notified`,
         });
@@ -165,8 +163,8 @@ waitRequestRouter.put("/removeAll", async (req, res) => {
 
 waitRequestRouter.post("/addWaitReq", async (req, res) => {
     try {
-        const { waitingNumber, lineUserId, groupSize, requestMadeTime } = req.body;
-        const newReq = new WaitRequest(waitingNumber, lineUserId, groupSize, requestMadeTime);
+        const { waitingNumber, lineUserId, status, groupSize, requestMadeTime } = req.body;
+        const newReq = new WaitRequest(waitingNumber, lineUserId, status, groupSize, requestMadeTime);
         const newReqRef = await addDoc(todayWaitRef, { ...newReq });
         console.log(newReqRef.id);
         res.status(200).json({

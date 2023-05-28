@@ -8,14 +8,15 @@ const Menu = () => {
   const [menuList, setMenuList] = useState([]);
   const [editModal, setEditModal] = useState(""); //存 item 物件
 
-  useEffect(() => {
-    fetchMenu();
-  }, []);
+  // useEffect(() => {
+  //   fetchMenu();
+  // }, []);
 
   const fetchMenu = async () => {
+    console.log('f')
     try {
-      const response = await instance.get("/menu/getMenu");
-      setMenuList(response.data.menuList);
+      // const response = await instance.get("/menu/getMenu");
+      setMenuList(null);
     } catch (error) {
       console.log(error);
     }
@@ -33,10 +34,11 @@ const Menu = () => {
 
   return (
     <div>
-      <h2>Menu</h2>
+      {/* <h2>Menu</h2>
       <div>
         <h3>Normal Items</h3>
-        {menuList
+        {
+          menuList
           .filter((item) => item.itemCategory !== "Today's Special")
           .map((item) => (
             <div key={item.itemId}>
@@ -59,7 +61,7 @@ const Menu = () => {
               <p>Status: {item.status}</p>
             </div>
           ))}
-      </div>
+      </div> */}
       <Tabs
         onChange={onChange}
         type="card"
@@ -72,7 +74,7 @@ const Menu = () => {
             children: 
             <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '1.2rem', padding: '1rem'}}>
               {fakeMenu.filter((item) => {
-                return (item.itemCategory == tabs[i]);
+                return (item.itemCategory === tabs[i]);
               }).map((item) => {
                 return (
                   item.status === 'serving' ? 
@@ -86,8 +88,6 @@ const Menu = () => {
                   >{item.itemName} </Card>
                 );
               })}
-              {/* <Card style={{width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green'}}>A1</Card>
-              <Card style={{width: '150px', height: '150px', display: 'flex', backgroundColor: '#fe7654', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'red'}}>A2</Card> */}
             </div>
           };
         })}

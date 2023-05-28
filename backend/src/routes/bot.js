@@ -21,13 +21,22 @@ const client = new Client(config);
 const REPLYS = {
   ALREADY_WAITING: '很抱歉無法為您候位，因為您已在候位隊伍中。請耐心等候！',
   WAIT_SUCCESS: '候位成功！',
-  WAIT_FAILURE: '',
+  WAIT_FAILURE: '候位失敗',
   SYSTEM_ERROR: '系統錯誤，我們正在努力修復中！',
   CANCEL_FAILURE: '很抱歉無法為您取消候位，因為您目前並沒有在候位。',
   CANCEL_SUCCESS: '取消候位成功！',
 }
 
 const getTextMessage = (msg) => ({ type: 'text', text: msg });
+
+const ADMINS = {
+  RUBY: 'U3dc4e9a67c16a598c1d4cf605d17065f',
+}
+
+const pushMessage = async (userId, msg) => {
+  console.log(`正在推送訊息給 ${userId}`);
+  await client.pushMessage(userId, getTextMessage(msg));
+}
 
 const handleEvent = async event => {
   if (event.type !== 'message' || event.message.type !== 'text') {
@@ -62,45 +71,47 @@ const handleEvent = async event => {
   // const echo = { type: 'text', text: userMessage };
   let reply = [];
 
-  if (userMessage === '我要候位') {
-    if (!user.isWating) {  /* 消費者沒有在候位 */
-      try {
-        reply.push(REPLYS.WAIT_SUCCESS);
-        const docRef = doc(db, 'variables', 'lastAssigned');
-        const docSnap = await getDoc(docRef);
+  try {
 
-        if (docSnap.exists()) {
-          const assignedNumber = docSnap.data().number+1;
-          reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
-          user.isWating = true;
-          await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
-          await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
-        } else {
-          reply.push(REPLYS.SYSTEM_ERROR);
-        }
-      } catch (e) {
-        console.log(e);
-        reply.push(REPLYS.WAIT_FAILURE);
+    if (userMessage === '我要候位') {
+      if (!user.isWating) {  /* 消費者沒有在候位 */
+      reply.push(REPLYS.WAIT_SUCCESS);
+      const docRef = doc(db, 'variables', 'lastAssigned');
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        const assignedNumber = docSnap.data().number+1;
+        reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
+        user.isWating = true;
+        await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
+        await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
+      } else {
+        reply.push(REPLYS.SYSTEM_ERROR);
       }
     } else {
       reply.push(REPLYS.ALREADY_WAITING);
     }
-  } else if (userMessage === "取消候位") {
-    if (user.isWating) {
-      user.isWating = false;
-      reply.push(REPLYS.CANCEL_SUCCESS);
-      await setDoc(userRef, { ...user });
+    } else if (userMessage === "取消候位") {
+      if (user.isWating) {
+        user.isWating = false;
+        reply.push(REPLYS.CANCEL_SUCCESS);
+        await setDoc(userRef, { ...user });
+      } else {
+        reply.push(REPLYS.CANCEL_FAILURE);
+      }
+    } else if (userMessage === "") {
+      
+    } else if (userMessage === "") {
+      
     } else {
-      reply.push(REPLYS.CANCEL_FAILURE);
+      
     }
-  } else if (userMessage === "") {
-
-  } else if (userMessage === "") {
-
-  } else {
-
+  
+  } catch (e) {
+    console.log(e);
+    await pushMessage(ADMINS.RUBY, `[系統推送] 系統錯誤，錯誤訊息如下：\n${e}`)
+    reply.push(REPLYS.SYSTEM_ERROR);
   }
-
   // use reply API
   for (let i = 0; i < reply.length; ++i)
     reply[i] = getTextMessage(reply[i]);
