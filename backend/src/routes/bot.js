@@ -72,25 +72,21 @@ const handleEvent = async event => {
   let reply = [];
 
   try {
-
     if (userMessage === '我要候位') {
       if (!user.isWating) {  /* 消費者沒有在候位 */
-      reply.push(REPLYS.WAIT_SUCCESS);
-      const docRef = doc(db, 'variables', 'lastAssigned');
-      const docSnap = await getDoc(docRef);
-      
-      if (docSnap.exists()) {
+        const docRef = doc(db, 'variables', 'lastAssigned');
+        const docSnap = await getDoc(docRef);
+        
         const assignedNumber = docSnap.data().number+1;
         reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
         user.isWating = true;
+        
         await setDoc(userRef, { ...user });  // 更新使用者 isWaiting 狀態
         await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
+        reply.push(REPLYS.WAIT_SUCCESS);
       } else {
-        reply.push(REPLYS.SYSTEM_ERROR);
+        reply.push(REPLYS.ALREADY_WAITING);
       }
-    } else {
-      reply.push(REPLYS.ALREADY_WAITING);
-    }
     } else if (userMessage === "取消候位") {
       if (user.isWating) {
         user.isWating = false;
