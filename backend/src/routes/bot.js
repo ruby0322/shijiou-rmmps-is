@@ -116,9 +116,15 @@ const handleEvent = async event => {
       }
     } else if (userMessage === "取消候位") {
       if (user.isWaiting) {
+        const q = query(todayWaitRef, where('lineUserId', '==', userId));
+        const waitingRequestsSnapShot = await getDocs(q);
+        let userWaitReqest = waitingRequestsSnapShot[0].data();
+        userWaitReqest.isWaiting = false;
+        userWaitReqest.status = 'canceled';
         user.isWaiting = false;
         reply.push(REPLYS.CANCEL_SUCCESS);
         await setDoc(userRef, { ...user });
+        await setDoc(doc(db, 'todayWaitRequests', waitingRequestsSnapShot[0].id), { ...userWaitReqest });
       } else {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
