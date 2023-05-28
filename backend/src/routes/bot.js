@@ -5,7 +5,7 @@ import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
 import WaitRequest from '../schema/WaitRequest.js';
 import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc  } from "firebase/firestore";
-
+import { strftime } from '../utils.js';
 
 dotenv.config();
 
@@ -37,8 +37,6 @@ const ADMINS = {
 }
 
 const getTextMessage = (msg) => ({ type: 'text', text: msg });
-
-const isNumber = str => [...str].every(c => '0123456789'.includes(c));
 
 const pushMessage = async (userId, msg) => {
   console.log(`正在推送訊息給 ${userId}...`);
@@ -92,16 +90,17 @@ const handleEvent = async event => {
         const docSnap = await getDoc(docRef);
         
         const assignedNumber = docSnap.data().number+1;
-        reply.push(`您的候位號碼是 ${assignedNumber} 號。我們將在您即將到號時通知您，請耐心等候～`);
+        const newReq = new WaitRequest(assignedNumber, userId, groupSize);
+        reply.push(REPLYS.WAIT_SUCCESS);
+        reply.push(`[候位資訊]\n候位號碼：${assignedNumber}\n用餐人數：${groupSize}\n發起時間：${strftime(newReq.requestMadeTime)}`);
+        reply.push(`我們將在您的座位準備好時通知您，請耐心等候～`);
         user.isWaiting = true;
-
         
         await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
 
         // 新增候位請求至 DB
-        addDoc(collection(db, 'todayWaitRequests'), { ...new WaitRequest(assignedNumber, userId, groupSize) });
+        addDoc(collection(db, 'todayWaitRequests'), { ...newReq });
 
-        reply.push(REPLYS.WAIT_SUCCESS);
       } else {  
         reply.push(REPLYS.INVALID_GROUP_SIZE);
       }
