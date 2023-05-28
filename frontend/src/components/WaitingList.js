@@ -1,8 +1,9 @@
 import WaitingListItem from './WaitingListItem';
 import { Space, Table, Tag, Button } from 'antd';
-import { BellFilled, CheckOutlined, DeleteFilled } from '@ant-design/icons'
+import { BellFilled, CheckOutlined, DeleteFilled, UserDeleteOutlined, UsergroupDeleteOutlined } from '@ant-design/icons'
 import './WaitingList.css'
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const testDatas = [
     {waitReqId: 'aaa', waitingNumber:12, lineUserId:'ruby', isWaiting:true, status:'late', groupSize:2, requestMadeTime:'18:00', requestAnsweredTime: '18:05', arriveTime: undefined, cancelTime: undefined},
@@ -21,27 +22,10 @@ const testDatas = [
 // waitingNumber, lineUserId, status, groupSize, requestMadeTime, requestAnsweredTime, arriveTime, cancelTime
 
 
-const clickNotification = (waitReqId) => {
-    console.log("clickNotification, waitReqId", waitReqId);
-}
 
-const clickCheck = (waitReqId) => {
-    console.log("clickCheck, waitReqId", waitReqId);
-}
-
-const clickDelete = (waitReqId) => {
-    console.log("clickDelete, waitReqId", waitReqId);
-}
-
-const clickClear = () => {
-    console.log("clickClear");
-}
-
-const clickRemoveAll = () => {
-    console.log("clickRemoveAll");
-}
 
 const WaitingList = () => {
+
     const columns = [
         {
             title: '候位編號',
@@ -132,8 +116,9 @@ const WaitingList = () => {
             }
         },
     ]
-    
+
     const [now, setNow] = useState(Date.now());
+    const navigate = useNavigate();
 
     useEffect(() => {
         const timer = setInterval(() => {
@@ -143,6 +128,30 @@ const WaitingList = () => {
         return () => clearInterval(timer);
     }, []);
 
+    const clickNotification = (waitReqId) => {
+        console.log("clickNotification, waitReqId", waitReqId);
+    }
+    
+    const clickCheck = (waitReqId) => {
+        console.log("clickCheck, waitReqId", waitReqId);
+    }
+    
+    const clickDelete = (waitReqId) => {
+        console.log("clickDelete, waitReqId", waitReqId);
+    }
+    
+    const clickClear = () => {
+        console.log("clickClear");
+    }
+    
+    const clickRemoveAll = () => {
+        console.log("clickRemoveAll");
+    }
+    
+    const clickHistory = () => {
+        navigate('/waiting-list-dashboard/history');
+    }
+
     return (
         <div>
             {/* {
@@ -150,16 +159,34 @@ const WaitingList = () => {
                     return (<WaitingListItem item={item} key={`waiting-list-item-${id}`} />)
                 })
             } */}
-            <div style={{
+            {/* <div style={{
                 display: 'flex',
-                justifyContent: 'flex-end',
+                justifyContent: 'space-between',
                 flexDirection: 'row',
-                gap: '1.2rem',
-                padding: '0.8rem'
-            }}>
-                <Button danger onClick={clickClear}>刪除已完成</Button>
-                <Button danger onClick={clickRemoveAll}>刪除全部</Button>
-            </div>
+            }}> */}
+                {/* <div style={{
+                    display: 'flex',
+                    justifyContent: 'flex-start',
+                    flexDirection: 'row',
+                    gap: '1.2rem',
+                    padding: '0.8rem'
+                }}>
+                    <Button danger onClick={clickHistory}>
+                        歷史紀錄
+                    </Button>
+                </div> */}
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    flexDirection: 'row',
+                    gap: '1.2rem',
+                    padding: '0.8rem'
+                }}>
+                    <Button icon={<UserDeleteOutlined />} danger onClick={clickClear}>刪除已完成</Button>
+                    <Button icon={<UsergroupDeleteOutlined />} danger onClick={clickRemoveAll}>刪除全部</Button>
+                </div>
+            {/* </div> */}
+                
             
             <Table columns={columns} dataSource={testDatas} rowClassName={row => !row.isWaiting && "disabled-row"} pagination={{ pageSize: 50 }} scroll={{y: 450}}/>
         </div>
