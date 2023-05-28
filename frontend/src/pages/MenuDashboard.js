@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import instance from "../axios";
 import fakeMenu from "../components/fakeMenu";
-import { Tabs, Card } from 'antd';
+import { Tabs, Card, Modal, Input, InputNumber, Button, Radio } from 'antd';
+import { EditOutlined } from '@ant-design/icons';
 
 const Menu = () => {
   const [menuList, setMenuList] = useState([]);
+  const [editModal, setEditModal] = useState(""); //存 item 物件
 
   useEffect(() => {
     fetchMenu();
@@ -21,6 +23,10 @@ const Menu = () => {
 
   const onChange = (key) => {
     console.log(key);
+  };
+
+  const onChangeRadio = (e) => {
+    console.log(`radio checked:${e.target.value}`);
   };
 
   const tabs = ['咖啡', '茶', '風味飲', '早餐盤', '鹹食', '輕食', '甜點', '每日特餐'];
@@ -70,8 +76,14 @@ const Menu = () => {
               }).map((item) => {
                 return (
                   item.status === 'serving' ? 
-                  <Card title={'筆'} onClick={() => console.log(item.itemName)} style={{ width: '150px', backgroundColor: 'lightgreen', fontSize: "16px", color: 'black'}}>{item.itemName}</Card> :
-                  <Card onClick={() => console.log(item.itemName)} style={{width: '150px', display: 'flex', backgroundColor: 'lightgray', alignItems: "center", justifyContent: "center", fontSize: "16px", color: 'gray'}}>{item.itemName}</Card>
+                  <Card size="small" onClick={() => console.log(item.itemName)} style={{ width: '150px', backgroundColor: 'lightgreen', fontSize: "16px", color: 'black' }} 
+                  extra={
+                    <EditOutlined style={{ fontSize: 'large'}} onClick={() => {console.log("edit", item.itemName); setEditModal(item)}}/>}
+                  >{item.itemName} </Card> :
+                  <Card size="small" onClick={() => console.log(item.itemName)} style={{width: '150px', backgroundColor: 'lightgray', fontSize: "16px", color: 'gray'}} 
+                  extra={
+                    <EditOutlined style={{ fontSize: 'large'}} onClick={() => {console.log("edit", item.itemName); setEditModal(item)}}/>}
+                  >{item.itemName} </Card>
                 );
               })}
               {/* <Card style={{width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green'}}>A1</Card>
@@ -81,6 +93,17 @@ const Menu = () => {
         })}
         size="large"
       />
+      <Modal title="修改品項" centered open={editModal!==""} onOk={() => setEditModal("")} onCancel={() => setEditModal("")}>
+        <Input size="large" addonBefore="品名" placeholder={editModal.itemName} />
+        <Radio.Group onChange={onChangeRadio} >
+          {tabs.map((tab, i) => {
+            return (<Radio.Button value={i}>{tab}</Radio.Button>);
+          })}
+        </Radio.Group>
+        <InputNumber size="large"addonBefore="價格" placeholder={editModal.price} />
+        <Button size="large" >供應中</Button>
+        <Button size="large" danger >刪除品項</Button>
+      </Modal>
     </div>
 
   );
