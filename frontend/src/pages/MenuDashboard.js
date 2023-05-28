@@ -24,9 +24,7 @@ const Menu = () => {
     }
   };
 
-  const onChange = (key) => {
-    console.log(key);
-  };
+
 
   const onChangeRadio = (e) => {
     console.log(`radio checked:${e.target.value}`);
@@ -78,8 +76,8 @@ const Menu = () => {
             </div>
           ))}
       </div> */}
+      
       <Tabs
-        // onChange={onChange}
         type="card"
         items={new Array(8).fill(null).map((_, i) => {
           const id = String(i + 1);
