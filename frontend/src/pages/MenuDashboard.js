@@ -116,7 +116,6 @@ const Menu = () => {
                 <PlusCircleOutlined style={{ fontSize: '28px'}}/>
               </Card>
               
-<<<<<<< HEAD
               <Modal title="修改品項" centered open={editModal!==""} onOk={() => {
                   let newName = inputName === "" ? editModal.itemName : inputName;
                   let newPrice = inputPrice === "" ? editModal.price : inputPrice;
@@ -130,10 +129,6 @@ const Menu = () => {
                   setInputPrice("");
                 }}>
                 <Input size="large" addonBefore="品名" placeholder={editModal.itemName} onChange={onChangeInputName} />
-=======
-              <Modal title="修改品項" centered open={editModal!==""} onOk={() => setEditModal("")} onCancel={() => setEditModal("")}>
-                <Input size="large" addonBefore="品名" placeholder={editModal.itemName} />
->>>>>>> bot-features
                 <Radio.Group onChange={onChangeRadio} defaultValue={i}>
                   {tabs.map((tab, i0) => {
                     return (<Radio.Button value={i0}>{tab}</Radio.Button>);
@@ -141,18 +136,12 @@ const Menu = () => {
                 </Radio.Group>
                 <Input size="large" addonBefore="價格" placeholder={editModal.price} onChange={onChangeInputPrice} />
                 {editModal.status === 'serving' ? 
-<<<<<<< HEAD
                     <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>供應中</Button> :
                     <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>售完</Button>
-=======
-                    <Button size="large" >供應中</Button> :
-                    <Button size="large" >售完</Button>
->>>>>>> bot-features
                 }
                 <Button size="large" danger >刪除品項</Button>
               </Modal>
 
-<<<<<<< HEAD
               <Modal title="新增品項" centered open={addModal} onOk={() => {
                   if(inputName !== "" && inputPrice !== "" && Number(inputPrice) <= 1000 && Number(inputPrice) >= 0){
                     console.log("filter", inputName, tabs[i], Number(inputPrice));
@@ -168,10 +157,6 @@ const Menu = () => {
                   setInputPrice("");
                 }}>
                 <Input size="large" addonBefore="品名" required onChange={onChangeInputName}/>
-=======
-              <Modal title="新增品項" centered open={addModal} onOk={() => setAddModal(false)} onCancel={() => setAddModal(false)}>
-                <Input size="large" addonBefore="品名" />
->>>>>>> bot-features
                 <Input disabled size="large" addonBefore="類別" placeholder={tabs[i]} />
                 <Input size="large" addonBefore="價格" required onChange={onChangeInputPrice}/>
                 <Button size="large" >供應中</Button>
