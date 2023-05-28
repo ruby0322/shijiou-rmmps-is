@@ -3,6 +3,7 @@ const Customer = class {
         this.lineUserId = lineUserId;
         this.isWaiting  = false;
         this.isRequesting = false;
+        this.waitRequestId = null;
     }
 }
 

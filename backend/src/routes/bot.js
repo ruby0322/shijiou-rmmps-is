@@ -4,7 +4,7 @@ import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
 import WaitRequest from '../schema/WaitRequest.js';
-import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc  } from "firebase/firestore";
+import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc, updateDoc  } from "firebase/firestore";
 import { strftime, isNumber } from '../utils.js';
 
 dotenv.config();
@@ -99,7 +99,8 @@ const handleEvent = async event => {
         await setDoc(docRef, { number: assignedNumber });  // 更新最後分配號碼
 
         // 新增候位請求至 DB
-        addDoc(collection(db, 'todayWaitRequests'), { ...newReq });
+        const newReqRef = await addDoc(collection(db, 'todayWaitRequests'), { ...newReq });
+        user.waitRequestId = newReqRef.id;
 
       } else {  
         reply.push(REPLYS.INVALID_GROUP_SIZE);
@@ -116,20 +117,14 @@ const handleEvent = async event => {
       }
     } else if (userMessage === "取消候位") {
       if (user.isWaiting) {
-        const q = query(todayWaitRef, where('lineUserId', '==', userId));
-        const waitingRequestsSnapShot = await getDocs(q);
-        let userWaitRequest;
-        let userWaitRequestId;
-        waitingRequestsSnapShot.forEach((document) => {
-          userWaitRequest = document.data();
-          userWaitRequestId = document.id;
-        });
-        userWaitRequest.isWaiting = false;
-        userWaitRequest.status = 'canceled';
+        // 更新 WaitRequest 狀態：isWaiting = false, status = 'canceled'
+        await updateDoc(doc(db, 'todayWaitRequests', user.waitRequestId), { isWaiting: false, status: 'canceled' });
+
+        // 更新 Customer 狀態：isWaiting = false, waitRequestId = null
         user.isWaiting = false;
-        reply.push(REPLYS.CANCEL_SUCCESS);
+        user.waitRequestId = null;
         await setDoc(userRef, { ...user });
-        await setDoc(doc(db, 'todayWaitRequests', userWaitRequestId), { ...userWaitRequest });
+        reply.push(REPLYS.CANCEL_SUCCESS);
       } else {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
