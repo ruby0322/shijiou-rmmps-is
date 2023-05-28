@@ -131,6 +131,13 @@ waitRequestRouter.put("/remove", async (req, res) => {
       status: "removed",
     });
 
+    const waitReqSnap = await getDoc(waitReqRef);
+    const lineUserId = waitReqSnap.data().lineUserId;
+    await updateDoc(doc(db, "customers", lineUserId), {
+      isWaiting: false,
+      waitRequestId: null,
+    });
+
     res.status(200).json({
       message: `wait request ${waitReqId} status is updated to removed`,
     });
@@ -157,7 +164,7 @@ waitRequestRouter.put("/clear", async (req, res) => {
   } catch (error) {
     console.log(error);
   }
-});
+}); 
 
 waitRequestRouter.put("/removeAll", async (req, res) => {
   try {
