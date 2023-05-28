@@ -138,4 +138,4 @@ botRouter.post('/callback', middleware(config), (req, res) => {
     });
 });
 
-export { botRouter, notifyLINEUser };
+export { botRouter };
