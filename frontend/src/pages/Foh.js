@@ -39,6 +39,8 @@ const FOH = () => {
 
   // 獲取所有桌子
   const getTables = async () => {
+    console.log('getTables');
+    setTables([]);
     try {
       const response = await instance.get("/foh/getFOH");
       setTables(response.data.tableList);
@@ -94,9 +96,9 @@ const FOH = () => {
     }
   };
 
-  // useEffect(() => {
-  //   getTables();
-  // }, []);
+  useEffect(() => {
+    getTables();
+  }, [setTables]);
 
   const onChange = (key) => {
     console.log(key);
@@ -106,7 +108,7 @@ const FOH = () => {
 
   return (
     <div>
-      <h1>FOH</h1>
+      {/* <h1>FOH</h1>
       <div>
         <h2>新增桌子：</h2>
         <input
@@ -125,7 +127,8 @@ const FOH = () => {
       </div>
       <div>
         <h2>現有桌子：</h2>
-        {tables.map((table) => (
+        {
+          tables.map((table) => (
           <div key={table.tableId}>
             <p>{table.tableName}</p>
             <p>{table.area}</p>
@@ -135,8 +138,9 @@ const FOH = () => {
             </button>
             <button onClick={() => deleteTable(table.tableId)}>刪除</button>
           </div>
-        ))}
-      </div>
+          ))
+        }
+      </div> */}
       <Tabs
         onChange={onChange}
         type="card"
@@ -148,15 +152,19 @@ const FOH = () => {
             // children: `Content of Tab Pane ${id}`,
             children: 
             <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '1.2rem', padding: '1rem'}}>
-              {fakeTables.filter((table) => {
-                return (table.area == tabs[i]);
-              }).map((table) => {
-                return (
-                  table.status === 'vacant' ? 
-                  <Card key={table.tableId} onClick={() => console.log(table.tableId)} style={{width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green'}}>{table.tableName}</Card> :
-                  <Card key={table.tableId} onClick={() => console.log(table.tableId)} style={{width: '150px', height: '150px', display: 'flex', backgroundColor: '#fe7654', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'red'}}>{table.tableName}</Card>
-                );
-              })}
+              {
+                fakeTables.filter((table) => (table.area === tabs[i])).map((table) => {
+                  return (
+                    table.status === 'vacant' ? 
+                      <Card key={table.tableId} onClick={() => console.log(table.tableId)} style={{ width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green' }}>
+                        {table.tableName}
+                      </Card> :
+                      <Card key={table.tableId} onClick={() => console.log(table.tableId)} style={{ width: '150px', height: '150px', display: 'flex', backgroundColor: '#fe7654', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'red' }}>
+                        {table.tableName}
+                      </Card>
+                  );
+                })
+              }
               {/* <Card style={{width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green'}}>A1</Card>
               <Card style={{width: '150px', height: '150px', display: 'flex', backgroundColor: '#fe7654', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'red'}}>A2</Card> */}
             </div>
