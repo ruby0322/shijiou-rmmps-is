@@ -59,6 +59,10 @@ waitRequestRouter.put("/notify", async (req, res) => {
         await updateDoc(waitReqRef, {
             status: "notified",
         });
+        // line notify user
+        /*
+
+        */
         res.status(200).json({
             message: `wait request ${waitReqId} status is updated to notified`,
         });

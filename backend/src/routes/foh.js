@@ -19,9 +19,9 @@ fohRouter.get("/getFOH", async (req, res) => {
   try {
     const allTables = await getDocs(fohRef);
     let tableList = [];
-    allTables.forEach((doc) => {
-      tableList.push({ tableId: doc.id, ...doc.data() });
-      console.log(doc.id, " => ", doc.data());
+    allTables.forEach((document) => {
+      tableList.push({ tableId: document.id, ...document.data() });
+      console.log(document.id, " => ", document.data());
     });
     res.status(200).json({
       message: "load FOH data successfully",
