@@ -3,15 +3,28 @@ import instance from "../axios";
 import fakeMenu from "../components/fakeMenu";
 import { Tabs, Card, Modal, Input, InputNumber, Button, Radio } from 'antd';
 import { EditOutlined, PlusCircleOutlined } from '@ant-design/icons';
-import { useMenu } from "../hooks/useMenu";
 
-const MenuDashBoard = () => {
-  const { menuList, addMenuItem, updateItemContent, updateItemStatus, deleteMenuItem } = useMenu();
-  console.log("eeee", menuList);
+const Menu = () => {
+  const [menuList, setMenuList] = useState({});
   const [editModal, setEditModal] = useState(""); //存 item 物件
   const [addModal, setAddModal] = useState(false); // true/false
   const [inputName, setInputName] = useState(""); // input value of Modal - name
   const [inputPrice, setInputPrice] = useState(0); // input value of Model - price
+
+  useEffect(() => {
+    fetchMenu();
+  }, [setMenuList]);
+
+  const fetchMenu = async () => {
+    // console.log('f');
+    const res = await instance.get("/menu/getMenu");
+    if (res.status === 200) {
+      setMenuList(res.data);
+      console.log("successful fetch data");
+    } else {
+      return null;
+    }
+  };
 
   const onChangeRadio = (e) => {
     console.log(`radio checked:${e.target.value}`);
@@ -39,7 +52,7 @@ const MenuDashBoard = () => {
     });
     console.log(transformedData);
     return transformedData;
-  };
+  }
 
   const tabs = ['咖啡', '茶', '風味飲', '早餐盤', '鹹食', '輕食', '甜點', '每日特餐'];
 
@@ -103,6 +116,7 @@ const MenuDashBoard = () => {
                 <PlusCircleOutlined style={{ fontSize: '28px'}}/>
               </Card>
               
+<<<<<<< HEAD
               <Modal title="修改品項" centered open={editModal!==""} onOk={() => {
                   let newName = inputName === "" ? editModal.itemName : inputName;
                   let newPrice = inputPrice === "" ? editModal.price : inputPrice;
@@ -116,6 +130,10 @@ const MenuDashBoard = () => {
                   setInputPrice("");
                 }}>
                 <Input size="large" addonBefore="品名" placeholder={editModal.itemName} onChange={onChangeInputName} />
+=======
+              <Modal title="修改品項" centered open={editModal!==""} onOk={() => setEditModal("")} onCancel={() => setEditModal("")}>
+                <Input size="large" addonBefore="品名" placeholder={editModal.itemName} />
+>>>>>>> bot-features
                 <Radio.Group onChange={onChangeRadio} defaultValue={i}>
                   {tabs.map((tab, i0) => {
                     return (<Radio.Button value={i0}>{tab}</Radio.Button>);
@@ -123,12 +141,18 @@ const MenuDashBoard = () => {
                 </Radio.Group>
                 <Input size="large" addonBefore="價格" placeholder={editModal.price} onChange={onChangeInputPrice} />
                 {editModal.status === 'serving' ? 
+<<<<<<< HEAD
                     <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>供應中</Button> :
                     <Button size="large" onClick={ () => updateItemStatus(editModal.itemId) }>售完</Button>
+=======
+                    <Button size="large" >供應中</Button> :
+                    <Button size="large" >售完</Button>
+>>>>>>> bot-features
                 }
-                <Button size="large" danger onClick={ () => deleteMenuItem(editModal.itemId) } >刪除品項</Button>
+                <Button size="large" danger >刪除品項</Button>
               </Modal>
 
+<<<<<<< HEAD
               <Modal title="新增品項" centered open={addModal} onOk={() => {
                   if(inputName !== "" && inputPrice !== "" && Number(inputPrice) <= 1000 && Number(inputPrice) >= 0){
                     console.log("filter", inputName, tabs[i], Number(inputPrice));
@@ -144,6 +168,10 @@ const MenuDashBoard = () => {
                   setInputPrice("");
                 }}>
                 <Input size="large" addonBefore="品名" required onChange={onChangeInputName}/>
+=======
+              <Modal title="新增品項" centered open={addModal} onOk={() => setAddModal(false)} onCancel={() => setAddModal(false)}>
+                <Input size="large" addonBefore="品名" />
+>>>>>>> bot-features
                 <Input disabled size="large" addonBefore="類別" placeholder={tabs[i]} />
                 <Input size="large" addonBefore="價格" required onChange={onChangeInputPrice}/>
                 <Button size="large" >供應中</Button>
@@ -158,4 +186,4 @@ const MenuDashBoard = () => {
 
   );
 };
-export default MenuDashBoard;
+export default Menu;

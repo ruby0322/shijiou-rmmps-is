@@ -163,6 +163,7 @@ waitRequestRouter.put("/removeAll", async (req, res) => {
 });
 
 waitRequestRouter.post("/addWaitReq", async (req, res) => {
+<<<<<<< HEAD
   try {
     const {
       waitingNumber,
@@ -189,5 +190,22 @@ waitRequestRouter.post("/addWaitReq", async (req, res) => {
     console.log(error);
   }
 });
+=======
+    try {
+        const { waitingNumber, lineUserId, status, groupSize, requestMadeTime, isWaiting } = req.body;
+        const newReq = new WaitRequest(waitingNumber, lineUserId, groupSize);
+        newReq.status = status;
+        newReq.requestMadeTime = requestMadeTime;
+        newReq.isWaiting = isWaiting;
+        const newReqRef = await addDoc(todayWaitRef, { ...newReq });
+        console.log(newReqRef.id);
+        res.status(200).json({
+            message: `new request ${newReqRef.id} is added successfully`,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+})
+>>>>>>> bot-features
 
 export default waitRequestRouter;
