@@ -69,6 +69,14 @@ const WaitingListPending = () => {
           title: '通知時間',
           dataIndex: 'requestAnsweredTime',
           key: 'requestAnsweredTime',
+          render: (requestAnsweredTime) => {
+            if(requestAnsweredTime !== null){
+                return (
+                    <div>{transformTime(requestAnsweredTime)}</div>
+                )
+            }
+            
+          }
       },
       {
           title: '狀態',
@@ -165,22 +173,28 @@ const WaitingListPending = () => {
       const timer = setInterval(() => {
           setNow(Date.now());
         //   transformData(todayWaitReqs).filter((item) => item.requestAnsweredTime !== null ).map((item) => {
-        //     checkLate(item.requestAnsweredTime, now);
+        //     checkLate(waitReqId);
         //   })
+            //console.log(transformData(todayWaitReqs)[0].waitReqId)
+            transformData(todayWaitReqs).map((item) => {
+                checkLate(transformData(item.waitReqId));
+            })
+            
           return ;
       }, 30000);
       return () => clearInterval(timer);
   }, []);
 
-//   const checkLate = (waitReqId) => {
-//     const item = todayWaitReqs[waitReqId];
-//     if(item.status === 'notified'){
-//         console.log(timeMinutesDifference(item.requestAnsweredTime, now));
-//         if(timeMinutesDifference(item.requestAnsweredTime, now) > 10){
-//             late(waitReqId);
-//         }
-//     }
-//   }
+  const checkLate = (waitReqId) => {
+    const item = todayWaitReqs[waitReqId];
+    // console.log(item.requestAnsweredTime);
+    if(item.status === 'notified'){
+        // console.log(timeMinutesDifference(item.requestAnsweredTime, now));
+        if(timeMinutesDifference(item.requestAnsweredTime, now) >= 10){
+            late(waitReqId);
+        }
+    }
+  }
 
   const transformTime = (timestamp) => {
     const date = new Date(timestamp);
