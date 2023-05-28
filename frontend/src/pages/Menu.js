@@ -83,11 +83,7 @@ const MENU = () => {
                     onClick={() => {
                       previousPage();
                     }}
-<<<<<<< HEAD
-                    disabled={activeKey == "1" ? true : false}
-=======
                     disabled={activeKey === "1"}
->>>>>>> bot-features
                   >
                     <CaretLeftOutlined />
                   </button>
@@ -99,11 +95,7 @@ const MENU = () => {
                           key={item.itemId}
                           className="menuItem menu-font"
                           style={{
-<<<<<<< HEAD
-                            opacity: item.status == "serving" ? 1 : 0.3,
-=======
                             opacity: item.status === "serving" ? 1 : 0.3,
->>>>>>> bot-features
                           }}
                         >
                           {`${item.itemName} \u00A0 /`} {item.price}
@@ -115,31 +107,13 @@ const MENU = () => {
                     onClick={() => {
                       nextPage();
                     }}
-<<<<<<< HEAD
-                    disabled={activeKey == "8" ? true : false}
-=======
                     disabled={activeKey === "8"}
->>>>>>> bot-features
                   >
                     <CaretRightOutlined />
                   </button>
                 </div>
               </Tabs.TabPane>
             ))}
-<<<<<<< HEAD
-            {/* <Tabs.TabPane tab="咖啡" key="1">
-      {menuList
-        .filter((item) => item.itemCategory === "咖啡")
-        .map((item) => (
-          <div key={item.itemId} style={{ writingMode: "vertical-rl" }}>
-            <h4>
-              {item.itemName} {item.price}
-            </h4>
-          </div>
-        ))}
-    </Tabs.TabPane> */}
-=======
->>>>>>> bot-features
           </Tabs>
         </div>
       )}
