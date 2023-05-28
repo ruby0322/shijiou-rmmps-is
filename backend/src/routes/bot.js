@@ -3,7 +3,7 @@ import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
-import { collection, setDoc, doc, getDoc  } from "firebase/firestore";
+import { collection, setDoc, doc, getDoc, getDocs  } from "firebase/firestore";
 
 
 dotenv.config();
@@ -100,8 +100,17 @@ const handleEvent = async event => {
       } else {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
-    } else if (userMessage === "") {
-      
+    } else if (userMessage === "候位狀況") {
+      if (user.isWating) {
+        // const todayWaitRequests = await getDocs(collection(db, 'todayWaitRequests'));
+        // todayWaitRequests.forEach((document) => {
+        //   todayWaitList[document.id] = document.data();
+        //   console.log(document.id, " => ", document.data());
+        // });
+        // todayWaitRequests.filter(x => x.data().isWating && x.data().requestMadeTime < )
+      } else {
+
+      }
     } else if (userMessage === "") {
       
     } else {
@@ -131,4 +140,4 @@ botRouter.post('/callback', middleware(config), (req, res) => {
     });
 });
 
-export default { botRouter, notifyLINEUser };
+export { botRouter, notifyLINEUser };
