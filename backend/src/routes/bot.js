@@ -5,7 +5,7 @@ import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
 import WaitRequest from '../schema/WaitRequest.js';
 import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc  } from "firebase/firestore";
-import { strftime } from '../utils.js';
+import { strftime, isNumber } from '../utils.js';
 
 dotenv.config();
 
