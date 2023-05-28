@@ -10,7 +10,7 @@ import {
   updateDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { notifyLINEUser } from "./bot.js";
+import { notifyLINEUser } from '../botUtils.js';
 
 const waitRequestRouter = express.Router();
 const todayWaitCollection = "todayWaitRequests";
@@ -81,6 +81,23 @@ waitRequestRouter.put("/late", async (req, res) => {
   }
 });
 
+// waitRequestRouter.put("/cancel", async (req, res) => {
+//   try {
+//     const waitReqId = req.body.waitReqId;
+//     const waitReqRef = doc(db, todayWaitCollection, waitReqId);
+//     await updateDoc(waitReqRef, {
+//       isWaiting: false,
+//       status: "canceled",
+//       arriveTime: Date.now(),
+//     });
+//     res.status(200).json({
+//       message: `wait request ${waitReqId} status is updated to arrived`,
+//     });
+//   } catch (error) {
+//     console.log(error);
+//   }
+// });
+
 waitRequestRouter.put("/done", async (req, res) => {
   try {
     const waitReqId = req.body.waitReqId;
@@ -88,6 +105,7 @@ waitRequestRouter.put("/done", async (req, res) => {
     await updateDoc(waitReqRef, {
       isWaiting: false,
       status: "arrived",
+      arriveTime: Date.now(),
     });
     res.status(200).json({
       message: `wait request ${waitReqId} status is updated to arrived`,
@@ -164,31 +182,20 @@ waitRequestRouter.put("/removeAll", async (req, res) => {
 });
 
 waitRequestRouter.post("/addWaitReq", async (req, res) => {
-  try {
-    const {
-      waitingNumber,
-      lineUserId,
-      status,
-      groupSize,
-      requestMadeTime,
-      isWaiting,
-    } = req.body;
-    const newReq = new WaitRequest(
-      waitingNumber,
-      lineUserId,
-      status,
-      groupSize,
-      requestMadeTime,
-      isWaiting
-    );
-    const newReqRef = await addDoc(todayWaitRef, { ...newReq });
-    console.log(newReqRef.id);
-    res.status(200).json({
-      message: `new request ${newReqRef.id} is added successfully`,
-    });
-  } catch (error) {
-    console.log(error);
-  }
-});
+    try {
+        const { waitingNumber, lineUserId, status, groupSize, requestMadeTime, isWaiting } = req.body;
+        const newReq = new WaitRequest(waitingNumber, lineUserId, groupSize);
+        newReq.status = status;
+        newReq.requestMadeTime = requestMadeTime;
+        newReq.isWaiting = isWaiting;
+        const newReqRef = await addDoc(todayWaitRef, { ...newReq });
+        console.log(newReqRef.id);
+        res.status(200).json({
+            message: `new request ${newReqRef.id} is added successfully`,
+        });
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 export default waitRequestRouter;

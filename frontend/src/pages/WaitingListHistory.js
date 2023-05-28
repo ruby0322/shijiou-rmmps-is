@@ -27,18 +27,7 @@ const WaitingListHistory = () => {
         Object.keys(data).forEach((key) => {
           transformedData.push({ waitReqId: key, ...data[key] });
         });
-        // sort by requestMadeTime
-        // 現在requestMadeTime還是一個字串，到時候要轉成timeStamp比較!
-        let sortedData = [];
-        let unfinished = [];
-        let finished = [];
-        unfinished = transformedData.filter((item) => item.isWaiting === true);
-        unfinished.sort((a, b) => (a.requestMadeTime < b.requestMadeTime ? -1 : 1));
-        finished = transformedData.filter((item) => item.isWaiting === false);
-        finished.sort((a, b) => a.requestMadeTime < b.requestMadeTime ? -1 : 1);
-        sortedData = unfinished.concat(finished);
-        return sortedData;
-        // return transformedData;
+        return transformedData;    
       }
 
     const columns = [
@@ -152,12 +141,6 @@ const WaitingListHistory = () => {
 
     return (
         <div>
-            {/* {
-                testDatas.map((item, id) => {
-                    return (<WaitingListItem item={item} key={`waiting-list-item-${id}`} />)
-                })
-            } */}
-            
             <Table columns={columns} dataSource={transformData(historyWaitReqs)} pagination={{ pageSize: 50 }} scroll={{y: 450}} />
         </div>
     );

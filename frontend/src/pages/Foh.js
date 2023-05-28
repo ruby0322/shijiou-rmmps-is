@@ -59,7 +59,6 @@ const FOH = () => {
       else if (a.tableName > b.tableName) return 1;
       else return 0;
     });
-    console.log(transformedData);
     return transformedData;
   }
 

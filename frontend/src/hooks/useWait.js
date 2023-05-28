@@ -54,7 +54,7 @@ const WaitProvider = (props) => {
             newTodayWaitReqs[waitReqId].status = "notified";
             setTodayWaitReqs(newTodayWaitReqs);
         } catch (error) {
-            console.log(error); 
+            console.log(error);
         }
     };
 
@@ -88,7 +88,7 @@ const WaitProvider = (props) => {
             newTodayWaitReqs[waitReqId].status = "removed";
             setTodayWaitReqs(newTodayWaitReqs);
         } catch (error) {
-            console.log(error); 
+            console.log(error);
         }
     };
 
