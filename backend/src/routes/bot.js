@@ -125,7 +125,7 @@ const handleEvent = async event => {
   return client.replyMessage(event.replyToken, reply);
 }
 
-botRouter.post('/callback', middleware(config), (req, res) => {
+botRouter.post('/callback', middleware, (req, res) => {
   // console.log(req);
 
   Promise
