@@ -1,6 +1,6 @@
-import { Space, Table, Tag, Button } from 'antd';
-import { useEffect, useState } from 'react';
-import { useWait } from '../hooks/useWait';
+import { Space, Table, Tag, Button } from "antd";
+import { useEffect, useState } from "react";
+import { useWait } from "../hooks/useWait";
 
 // const testDatas = [
 //     {waitReqId: 'aaa', waitingNumber:12, lineUserId:'ruby', isWaiting:true, status:'late', groupSize:2, requestMadeTime:'18:00', requestAnsweredTime: '18:05', arriveTime: undefined, cancelTime: undefined},
@@ -19,148 +19,151 @@ import { useWait } from '../hooks/useWait';
 // waitingNumber, lineUserId, status, groupSize, requestMadeTime, requestAnsweredTime, arriveTime, cancelTime
 
 const WaitingListHistory = () => {
+  const { historyWaitReqs } = useWait();
 
-    const { historyWaitReqs } = useWait();
+  const transformData = (data) => {
+    let transformedData = [];
+    Object.keys(data).forEach((key) => {
+      transformedData.push({ waitReqId: key, ...data[key] });
+    });
+    // sort by requestMadeTime
+    // 現在requestMadeTime還是一個字串，到時候要轉成timeStamp比較!
+    let sortedData = [];
+    let unfinished = [];
+    let finished = [];
+    unfinished = transformedData.filter((item) => item.isWaiting === true);
+    unfinished.sort((a, b) => (a.requestMadeTime < b.requestMadeTime ? -1 : 1));
+    finished = transformedData.filter((item) => item.isWaiting === false);
+    finished.sort((a, b) => (a.requestMadeTime < b.requestMadeTime ? -1 : 1));
+    sortedData = unfinished.concat(finished);
+    return sortedData;
+    // return transformedData;
+  };
 
-    const transformData = (data) => {
-        let transformedData = [];
-        Object.keys(data).forEach((key) => {
-          transformedData.push({ waitReqId: key, ...data[key] });
-        });
-        // sort by requestMadeTime
-        // 現在requestMadeTime還是一個字串，到時候要轉成timeStamp比較!
-        let sortedData = [];
-        let unfinished = [];
-        let finished = [];
-        unfinished = transformedData.filter((item) => item.isWaiting === true);
-        unfinished.sort((a, b) => (a.requestMadeTime < b.requestMadeTime ? -1 : 1));
-        finished = transformedData.filter((item) => item.isWaiting === false);
-        finished.sort((a, b) => a.requestMadeTime < b.requestMadeTime ? -1 : 1);
-        sortedData = unfinished.concat(finished);
-        return sortedData;
-        // return transformedData;
-      }
+  const columns = [
+    {
+      title: "日期",
+      dataIndex: "requestMadeTime",
+      key: "date",
+      render: () => {
+        return <div>date</div>;
+      },
+    },
+    {
+      title: "候位編號",
+      dataIndex: "waitingNumber",
+      key: "waitingNumber",
+    },
+    {
+      title: "人數",
+      dataIndex: "groupSize",
+      key: "groupSize",
+    },
+    {
+      title: "候位時間",
+      dataIndex: "requestMadeTime",
+      key: "requestMadeTime",
+    },
+    {
+      title: "通知時間",
+      dataIndex: "requestAnsweredTime",
+      key: "requestAnsweredTime",
+    },
+    {
+      title: "狀態",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        let color = "blue";
+        let word = "";
+        if (status === "pending") {
+          color = "blue";
+          word = "尚未叫號";
+        } else if (status === "notified") {
+          color = "orange";
+          word = "已叫號";
+        } else if (status === "late") {
+          color = "red";
+          word = "逾時";
+        } else if (status === "arrived") {
+          color = "green";
+          word = "已入座";
+        } else if (status === "removed") {
+          color = "lightgray";
+          word = "老闆取消";
+        } else if (status === "canceled") {
+          color = "lightgray";
+          word = "顧客取消";
+        }
+        return (
+          <Tag bordered={false} color={color} key={status}>
+            {word}
+          </Tag>
+        );
+      },
+    },
+    {
+      title: "計時",
+      dataIndex: ["requestAnsweredTime", "arriveTime"],
+      key: "test",
+      render: (text, row) => {
+        return (
+          // row["arriveTime"] !== undefined ?
+          // arriveTime/cancelTime/removeTime都要檢查
+          //     <div>{row["requestAnsweredTime"]+row["arriveTime"]}</div> :
+          // <div>{ now }</div>
+          <div>test</div>
+        );
+      },
+    },
+    // {
+    //     title: '',
+    //     dataIndex: 'waitReqId',
+    //     key: 'buttons',
+    //     render: (waitReqId) => {
+    //         return (
+    //             <div style={{
+    //                     width: '100%',
+    //                     display: 'flex',
+    //                     flexDirection: 'row',
+    //                     gap: '1.2rem',
+    //                 }}
+    //             >
+    //               <BellFilled style={{ fontSize: '20px' }} key={'Notification'+waitReqId}/>
+    //               <CheckOutlined style={{ fontSize: '20px' }} key={'Check'+waitReqId}/>
+    //               <DeleteFilled style={{ fontSize: '20px' }} key={'Delete'+waitReqId}/>
+    //             </div>
+    //         );
+    //     }
+    // },
+  ];
 
-    const columns = [
-        {
-            title: '日期',
-            dataIndex: 'requestMadeTime',
-            key: 'date',
-            render: () => {
-                return <div>date</div>
-            }
-        },
-        {
-            title: '候位編號',
-            dataIndex: 'waitingNumber',
-            key: 'waitingNumber',
-        },
-        {
-            title: '人數',
-            dataIndex: 'groupSize',
-            key: 'groupSize',
-        },
-        {
-            title: '候位時間',
-            dataIndex: 'requestMadeTime',
-            key: 'requestMadeTime',
-        },
-        {
-            title: '通知時間',
-            dataIndex: 'requestAnsweredTime',
-            key: 'requestAnsweredTime',
-        },
-        {
-            title: '狀態',
-            dataIndex: 'status',
-            key: 'status',
-            render: (status) => {
-                let color = 'blue';
-                let word = '';
-                if(status === 'pending'){
-                    color='blue';
-                    word='尚未叫號';
-                }else if(status === 'notified'){
-                    color='orange';
-                    word='已叫號';
-                }else if(status === 'late'){
-                    color='red';
-                    word='逾時';
-                }else if(status === 'arrived'){
-                    color='green';
-                    word='已入座';
-                }else if(status === 'removed'){
-                    color='lightgray';
-                    word='老闆取消';
-                }else if(status === 'canceled'){
-                    color='lightgray';
-                    word='顧客取消';
-                }
-                return (
-                    <Tag bordered={false} color={color} key={status}>
-                        {word}
-                    </Tag>
-                );
-                
-            }
-        },
-        {
-            title: '計時',
-            dataIndex: ['requestAnsweredTime', 'arriveTime'],
-            key: 'test',
-            render: (text, row) => {
-                return (
-                    // row["arriveTime"] !== undefined ?
-                    // arriveTime/cancelTime/removeTime都要檢查
-                    //     <div>{row["requestAnsweredTime"]+row["arriveTime"]}</div> :
-                    // <div>{ now }</div>
-                    <div>test</div>
-                )
-            }
-        },
-        // {
-        //     title: '',
-        //     dataIndex: 'waitReqId',
-        //     key: 'buttons',
-        //     render: (waitReqId) => {
-        //         return (
-        //             <div style={{
-        //                     width: '100%',
-        //                     display: 'flex',
-        //                     flexDirection: 'row',
-        //                     gap: '1.2rem',
-        //                 }}
-        //             >
-        //               <BellFilled style={{ fontSize: '20px' }} key={'Notification'+waitReqId}/>
-        //               <CheckOutlined style={{ fontSize: '20px' }} key={'Check'+waitReqId}/>
-        //               <DeleteFilled style={{ fontSize: '20px' }} key={'Delete'+waitReqId}/>
-        //             </div>
-        //         );
-        //     }
-        // },
-    ]
-    
-    const [now, setNow] = useState(Date.now());
+  const [now, setNow] = useState(Date.now());
 
-    useEffect(() => {
-        const timer = setInterval(() => {
-            setNow(Date.now());
-            return ;
-        }, 30000);
-        return () => clearInterval(timer);
-    }, []);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setNow(Date.now());
+      return;
+    }, 30000);
+    return () => clearInterval(timer);
+  }, []);
 
-    return (
-        <div>
-            {/* {
+  return (
+    <div>
+      {/* {
                 testDatas.map((item, id) => {
                     return (<WaitingListItem item={item} key={`waiting-list-item-${id}`} />)
                 })
             } */}
-            
-            <Table columns={columns} dataSource={transformData(historyWaitReqs)} pagination={{ pageSize: 50 }} scroll={{y: 450}} />
-        </div>
-    );
-}
+
+      <Table
+        columns={columns}
+        dataSource={transformData(historyWaitReqs)}
+        pagination={{ pageSize: 50 }}
+        scroll={{ y: 450 }}
+      />
+    </div>
+  );
+};
 
 export default WaitingListHistory;
