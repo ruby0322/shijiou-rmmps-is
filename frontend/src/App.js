@@ -79,7 +79,7 @@ const App = () => {
             }}
           />
           <span>
-            { tabKeyToLabelMap[currentTabKey  ] }
+            { tabKeyToLabelMap[currentTabKey] }
           </span>
         </Header>
         <Content

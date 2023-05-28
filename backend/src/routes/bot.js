@@ -100,6 +100,7 @@ const handleEvent = async event => {
   
   } catch (e) {
     console.log(e);
+    reply.push(REPLYS.SYSTEM_ERROR);
   }
   // use reply API
   for (let i = 0; i < reply.length; ++i)
