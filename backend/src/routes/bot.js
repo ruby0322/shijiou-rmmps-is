@@ -29,6 +29,14 @@ const REPLYS = {
 
 const getTextMessage = (msg) => ({ type: 'text', text: msg });
 
+const ADMINS = {
+  RUBY: 'U3dc4e9a67c16a598c1d4cf605d17065f',
+}
+
+const pushMessage = (userId, msg) => {
+  client.pushMessage(userId, getTextMessage(msg));
+}
+
 const handleEvent = async event => {
   if (event.type !== 'message' || event.message.type !== 'text') {
     // ignore non-text-message event
@@ -100,6 +108,7 @@ const handleEvent = async event => {
   
   } catch (e) {
     console.log(e);
+    pushMessage(ADMINS.RUBY, `系統錯誤，錯誤訊息如下：\n${e}`)
     reply.push(REPLYS.SYSTEM_ERROR);
   }
   // use reply API
