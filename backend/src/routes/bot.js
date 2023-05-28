@@ -92,7 +92,7 @@ const handleEvent = async event => {
         const assignedNumber = docSnap.data().number+1;
         const newReq = new WaitRequest(assignedNumber, userId, groupSize);
         reply.push(REPLYS.WAIT_SUCCESS);
-        reply.push(`[候位資訊]\n候位號碼：${assignedNumber}\n用餐人數：${groupSize}\n發起時間：${strftime('%A %l:%M%P %e %b %Y', newReq.requestMadeTime)}`);
+        reply.push(`[候位資訊]\n\n候位號碼：${assignedNumber}\n用餐人數：${groupSize}\n發起時間：${strftime('%A %l:%M%P %e %b %Y', new Date(newReq.requestMadeTime + 480 * 60000))}`);
         reply.push(`我們將在您的座位準備好時通知您，請耐心等候～`);
         user.isWaiting = true;
         
