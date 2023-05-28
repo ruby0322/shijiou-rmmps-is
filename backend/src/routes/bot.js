@@ -117,6 +117,7 @@ const handleEvent = async event => {
         let userRequestMadeTime = 0;
         let others = [];
         waitingRequestsSnapShot.forEach((document) => {
+          console.log(`document => ${document.data()}`)
           if (document.data().lineUserId !== userId) {
             others.push(document.data().requestMadeTime);
           } else {
@@ -124,8 +125,8 @@ const handleEvent = async event => {
           }
         });
         const beforeUserCount = others.filter(x => x < userRequestMadeTime).length;
-        reply.push(`${others}`);
-        reply.push(`${userRequestMadeTime}`);
+        console.log(`others => ${others}`);
+        console.log(`userRequestsMadeTime => ${userRequestMadeTime}`);
         reply.push(`隊伍中還有 ${beforeUserCount} 組客人在您的前面。請耐心等候～`);
         
       } else {
