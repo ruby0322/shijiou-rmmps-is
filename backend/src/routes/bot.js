@@ -1,13 +1,11 @@
 import express from 'express';
-import { middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
 import WaitRequest from '../schema/WaitRequest.js';
 import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc, updateDoc  } from "firebase/firestore";
 import { strftime, isNumber } from '../utils.js';
-import { client, pushMessage, ADMINS, REPLYS, getTextMessage } from '../botUtils.js';
-// import { }
+import { client, middleware, pushMessage, ADMINS, REPLYS, getTextMessage } from '../botUtils.js'
 
 dotenv.config();
 
@@ -128,7 +126,7 @@ const handleEvent = async event => {
   return client.replyMessage(event.replyToken, reply);
 }
 
-botRouter.post('/callback', middleware(config), (req, res) => {
+botRouter.post('/callback', middleware, (req, res) => {
   // console.log(req);
 
   Promise

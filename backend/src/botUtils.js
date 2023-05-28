@@ -1,11 +1,7 @@
-import express from 'express';
-import { Client, middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
-import { db } from '../db.js';
-import Customer from '../schema/Customer.js';
-import WaitRequest from '../schema/WaitRequest.js';
-import { collection, setDoc, doc, getDoc, getDocs, query, where, addDoc, updateDoc  } from "firebase/firestore";
-import { strftime, isNumber } from '../utils.js';
+import { Client, middleware as botMiddleware } from '@line/bot-sdk';
+
+dotenv.config();
 
 const REPLYS = {
     ALREADY_WAITING: '很抱歉無法為您候位，因為您已在候位隊伍中。請耐心等候！',
@@ -41,5 +37,6 @@ const REPLYS = {
   };
   
 const client = new Client(config);
+const middleware = botMiddleware(config);
   
-export { REPLYS, ADMINS, getTextMessage, pushMessage, notifyLINEUser, client };
+export { REPLYS, ADMINS, getTextMessage, pushMessage, notifyLINEUser, client, middleware };
