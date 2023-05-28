@@ -123,6 +123,8 @@ const handleEvent = async event => {
             userRequestMadeTime = document.data().requestMadeTime;
           }
         });
+        console.log(others);
+        console.log(userRequestMadeTime);
         const beforeUserCount = others.filter(x => x < userRequestMadeTime).length;
         reply.push(`隊伍中還有 ${beforeUserCount} 組客人在您的前面。請耐心等候～`);
         
