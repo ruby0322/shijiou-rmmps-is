@@ -107,6 +107,12 @@ waitRequestRouter.put("/done", async (req, res) => {
       status: "arrived",
       arriveTime: Date.now(),
     });
+    const waitReqSnap = await getDoc(waitReqRef);
+    const lineUserId = waitReqSnap.data().lineUserId;
+    await updateDoc(doc(db, "customers", lineUserId), {
+      isWaiting: false,
+      waitRequestId: null,
+    });
     res.status(200).json({
       message: `wait request ${waitReqId} status is updated to arrived`,
     });
@@ -159,13 +165,21 @@ waitRequestRouter.put("/removeAll", async (req, res) => {
     let newlyAddHistoryWaitReqs = {};
     todayWaitRequests.forEach(async (document) => {
       const docRef = doc(db, todayWaitCollection, document.id);
-      const docData = { ...document.data() };
+      let docData = { ...document.data() };
+      const waitReqSnap = await getDoc(docRef);
+      const lineUserId = waitReqSnap.data().lineUserId;
+      await updateDoc(doc(db, "customers", lineUserId), {
+        isWaiting: false,
+        waitRequestId: null,
+      });
       if (docData.isWaiting === true) {
         const newDocData = {
+          ...docData,
           isWaiting: false,
           status: "removed",
-          ...docData,
         };
+        console.log("hh");
+        console.log(newDocData);
         const newHistDocRef = await addDoc(historyWaitRef, newDocData);
         newlyAddHistoryWaitReqs[newHistDocRef.id] = newDocData;
       } else {
