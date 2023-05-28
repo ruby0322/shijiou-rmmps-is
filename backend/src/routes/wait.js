@@ -81,6 +81,14 @@ waitRequestRouter.put("/late", async (req, res) => {
   }
 });
 
+waitRequestRouter.put("/cancel", async (req, res) => {
+  try {
+    
+  } catch (error) {
+    console.log(error);
+  }
+});
+
 waitRequestRouter.put("/done", async (req, res) => {
   try {
     const waitReqId = req.body.waitReqId;
