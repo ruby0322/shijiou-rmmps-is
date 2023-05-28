@@ -2,35 +2,35 @@ import React, { useState, useEffect } from "react";
 import instance from "../axios";
 import { Tabs, Card } from 'antd';
 
-const fakeTables = [ 
-  { "tableName": "A1", "area": "1F", "status": "vacant", "tableId":"aaa1" }, 
-  { "tableName": "A2", "area": "1F", "status": "vacant", "tableId":"aaa2" }, 
-  { "tableName": "A3", "area": "1F", "status": "vacant", "tableId":"aaa3" }, 
-  { "tableName": "A4", "area": "1F", "status": "vacant", "tableId":"aaa4" }, 
-  { "tableName": "A5", "area": "1F", "status": "vacant", "tableId":"aaa5" }, 
-  { "tableName": "A6", "area": "1F", "status": "vacant", "tableId":"aaa6" }, 
-  { "tableName": "A7", "area": "1F", "status": "vacant", "tableId":"aaa7" }, 
-  { "tableName": "A8", "area": "1F", "status": "vacant", "tableId":"aaa8" }, 
-  { "tableName": "A9", "area": "1F", "status": "vacant", "tableId":"aaa9" }, 
+// const fakeTables = [ 
+//   { "tableName": "A1", "area": "1F", "status": "vacant", "tableId":"aaa1" }, 
+//   { "tableName": "A2", "area": "1F", "status": "vacant", "tableId":"aaa2" }, 
+//   { "tableName": "A3", "area": "1F", "status": "vacant", "tableId":"aaa3" }, 
+//   { "tableName": "A4", "area": "1F", "status": "vacant", "tableId":"aaa4" }, 
+//   { "tableName": "A5", "area": "1F", "status": "vacant", "tableId":"aaa5" }, 
+//   { "tableName": "A6", "area": "1F", "status": "vacant", "tableId":"aaa6" }, 
+//   { "tableName": "A7", "area": "1F", "status": "vacant", "tableId":"aaa7" }, 
+//   { "tableName": "A8", "area": "1F", "status": "vacant", "tableId":"aaa8" }, 
+//   { "tableName": "A9", "area": "1F", "status": "vacant", "tableId":"aaa9" }, 
 
-  { "tableName": "B1", "area": "2F", "status": "vacant", "tableId":"b1" }, 
-  { "tableName": "B2", "area": "2F", "status": "vacant", "tableId":"b2" }, 
-  { "tableName": "B3", "area": "2F", "status": "vacant", "tableId":"b3" }, 
-  { "tableName": "B4", "area": "2F", "status": "vacant", "tableId":"b4" }, 
-  { "tableName": "B5", "area": "2F", "status": "vacant", "tableId":"b5" }, 
-  { "tableName": "B6", "area": "2F", "status": "vacant", "tableId":"b6" }, 
-  { "tableName": "B7", "area": "2F", "status": "vacant", "tableId":"b7" }, 
-  { "tableName": "B8", "area": "2F", "status": "vacant", "tableId":"b8" }, 
-  { "tableName": "B9", "area": "2F", "status": "vacant", "tableId":"b9" }, 
-  { "tableName": "B10", "area": "2F", "status": "vacant", "tableId":"b10" }, 
+//   { "tableName": "B1", "area": "2F", "status": "vacant", "tableId":"b1" }, 
+//   { "tableName": "B2", "area": "2F", "status": "vacant", "tableId":"b2" }, 
+//   { "tableName": "B3", "area": "2F", "status": "vacant", "tableId":"b3" }, 
+//   { "tableName": "B4", "area": "2F", "status": "vacant", "tableId":"b4" }, 
+//   { "tableName": "B5", "area": "2F", "status": "vacant", "tableId":"b5" }, 
+//   { "tableName": "B6", "area": "2F", "status": "vacant", "tableId":"b6" }, 
+//   { "tableName": "B7", "area": "2F", "status": "vacant", "tableId":"b7" }, 
+//   { "tableName": "B8", "area": "2F", "status": "vacant", "tableId":"b8" }, 
+//   { "tableName": "B9", "area": "2F", "status": "vacant", "tableId":"b9" }, 
+//   { "tableName": "B10", "area": "2F", "status": "vacant", "tableId":"b10" }, 
 
-  { "tableName": "O1", "area": "戶外", "status": "vacant", "tableId":"ooo1" }, 
-  { "tableName": "O2", "area": "戶外", "status": "vacant", "tableId":"ooo2" }, 
-  { "tableName": "O3", "area": "戶外", "status": "vacant", "tableId":"ooo3" }, 
-  { "tableName": "O4", "area": "戶外", "status": "vacant", "tableId":"ooo4" }, 
-  { "tableName": "O5", "area": "戶外", "status": "vacant", "tableId":"ooo5" }, 
-  { "tableName": "O6", "area": "戶外", "status": "vacant", "tableId":"ooo6" }
-];
+//   { "tableName": "O1", "area": "戶外", "status": "vacant", "tableId":"ooo1" }, 
+//   { "tableName": "O2", "area": "戶外", "status": "vacant", "tableId":"ooo2" }, 
+//   { "tableName": "O3", "area": "戶外", "status": "vacant", "tableId":"ooo3" }, 
+//   { "tableName": "O4", "area": "戶外", "status": "vacant", "tableId":"ooo4" }, 
+//   { "tableName": "O5", "area": "戶外", "status": "vacant", "tableId":"ooo5" }, 
+//   { "tableName": "O6", "area": "戶外", "status": "vacant", "tableId":"ooo6" }
+// ];
 
 const FOH = () => {
   const [tables, setTables] = useState([]);
@@ -42,11 +42,11 @@ const FOH = () => {
   const getTables = async () => {
     console.log('getTables');
     setTables([]);
-    try {
-      const response = await instance.get("/foh/getFOH");
+    const response = await instance.get("/foh/getFOH");
+    if (response.status === 200) {
       setTables(response.data.tableList);
-    } catch (error) {
-      console.log(error);
+    } else {
+      return null;
     }
   };
 
@@ -154,7 +154,7 @@ const FOH = () => {
             children: 
             <div style={{display: 'flex', flexDirection: 'row', flexWrap: 'wrap', gap: '1.2rem', padding: '1rem'}}>
               {
-                fakeTables.filter((table) => (table.area === tabs[i])).map((table) => {
+                tables.filter((table) => (table.area === tabs[i])).map((table) => {
                   return (
                     table.status === 'vacant' ? 
                       <Card key={table.tableId} onClick={() => console.log(table.tableId)} style={{ width: '150px', height: '150px', display: 'flex', backgroundColor: 'lightgreen', alignItems: "center", justifyContent: "center", fontSize: "36px", color: 'green' }}>
