@@ -1,5 +1,4 @@
 import express from 'express';
-import { middleware } from '@line/bot-sdk';
 import dotenv from 'dotenv-defaults';
 import { db } from '../db.js';
 import Customer from '../schema/Customer.js';
