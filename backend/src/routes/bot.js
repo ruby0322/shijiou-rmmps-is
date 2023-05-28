@@ -118,16 +118,18 @@ const handleEvent = async event => {
       if (user.isWaiting) {
         const q = query(todayWaitRef, where('lineUserId', '==', userId));
         const waitingRequestsSnapShot = await getDocs(q);
-        let userWaitReqest;
+        let userWaitRequest;
+        let userWaitRequestId;
         waitingRequestsSnapShot.forEach((document) => {
-          userWaitReqest = document.data();
+          userWaitRequest = document.data();
+          userWaitRequestId = document.id;
         });
-        userWaitReqest.isWaiting = false;
-        userWaitReqest.status = 'canceled';
+        userWaitRequest.isWaiting = false;
+        userWaitRequest.status = 'canceled';
         user.isWaiting = false;
         reply.push(REPLYS.CANCEL_SUCCESS);
         await setDoc(userRef, { ...user });
-        await setDoc(doc(db, 'todayWaitRequests', waitingRequestsSnapShot[0].id), { ...userWaitReqest });
+        await setDoc(doc(db, 'todayWaitRequests', userWaitRequestId), { ...userWaitRequest });
       } else {
         reply.push(REPLYS.CANCEL_FAILURE);
       }
