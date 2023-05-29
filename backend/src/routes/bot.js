@@ -107,7 +107,9 @@ const handleEvent = async event => {
         reply.push(`隊伍中還有 ${beforeUserCount} 組客人在您的前面。請耐心等候～`);
         
       } else {
-        reply.push(`隊伍中有 ${waitingRequestsSnapShot.length} 組客人正在候位。`);
+        let cnt = 0;
+        waitingRequestsSnapShot.forEach(x => { cnt += 1; })
+        reply.push(`隊伍中有 ${cnt} 組客人正在候位。`);
       }
     } else if (userMessage === "") {
       
