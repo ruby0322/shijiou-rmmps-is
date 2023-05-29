@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBdMU3LuR9Tt_OVmQsYN8KDWhzGwxKJhVM",
+  apiKey: process.env.FIREBASE_API_KEY,
   authDomain: "shijiou-rmmps-is3.firebaseapp.com",
   projectId: "shijiou-rmmps-is3",
   storageBucket: "shijiou-rmmps-is3.appspot.com",
