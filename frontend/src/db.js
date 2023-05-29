@@ -3,15 +3,15 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBhb2y0HsVqAeT88DAe-1PRBA0l3bLiVDs",
-    authDomain: "shijiou-rmmps-is2.firebaseapp.com",
-    projectId: "shijiou-rmmps-is2",
-    storageBucket: "shijiou-rmmps-is2.appspot.com",
-    messagingSenderId: "788110559735",
-    appId: "1:788110559735:web:f9691a938cada11880c6f2",
-    measurementId: "G-WH537RE2R8"
-};
-
+    apiKey: "AIzaSyBdMU3LuR9Tt_OVmQsYN8KDWhzGwxKJhVM",
+    authDomain: "shijiou-rmmps-is3.firebaseapp.com",
+    projectId: "shijiou-rmmps-is3",
+    storageBucket: "shijiou-rmmps-is3.appspot.com",
+    messagingSenderId: "914782855839",
+    appId: "1:914782855839:web:78f7dfac169080cb2838aa",
+    measurementId: "G-RY1X8DR5XV"
+  };
+  
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 

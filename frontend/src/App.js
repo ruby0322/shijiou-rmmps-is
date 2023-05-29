@@ -7,7 +7,8 @@ import WaitingListDashboard from "./pages/WaitingListDashboard.js";
 import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-  PieChartOutlined,
+  AppstoreOutlined,
+  CoffeeOutlined,
   UserOutlined,
   FileOutlined
 } from '@ant-design/icons';
@@ -31,8 +32,8 @@ const getItem = ( key, icon, children) => ({
 });
 
 const items = [
-  getItem('menu-dashboard', <PieChartOutlined />),
-  getItem('foh', <FileOutlined />),
+  getItem('menu-dashboard', <CoffeeOutlined />),
+  getItem('foh', <AppstoreOutlined/>),
   getItem('wait-list-dashboard', <UserOutlined />, [
     getItem('waiting-list-dashboard/pending'),
     getItem('waiting-list-dashboard/history'),
